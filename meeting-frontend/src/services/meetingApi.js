@@ -1,0 +1,23 @@
+
+import axios from "axios";
+
+const api = axios.create({
+    baseURL: "http://localhost:8081/api/meetings",
+    headers: {
+        "Content-Type": "application/json"
+    }
+});
+
+export const sendMessage = async (
+    message,
+    conversationId
+) => {
+    const response = await api.post("/chat", {
+        message,
+        conversationId
+    });
+
+    return response.data;
+};
+
+export default api;

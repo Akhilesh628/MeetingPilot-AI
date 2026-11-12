@@ -1,0 +1,38 @@
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: meeting-agent
+
+  ai:
+    model:
+      chat: openai
+
+    openai:
+      base-url: https://api.groq.com/openai/v1
+      api-key: ${GROQ_API_KEY}
+
+      chat:
+        options:
+          model: openai/gpt-oss-20b
+        replay-reasoning-content: false
+
+    mcp:
+      client:
+        type: SYNC
+        name: meeting-agent
+        version: 1.0.0
+        request-timeout: 30s
+        streamable-http:
+          connections:
+            calendar-server:
+              url: http://localhost:8082
+              endpoint: /mcp
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

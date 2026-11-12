@@ -1,0 +1,35 @@
+
+# Sensitive Google OAuth credentials
+**/credentials/
+**/tokens/
+**/credentials.json
+**/StoredCredential
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Private keys
+*.pem
+*.key
+
+# Build files
+**/target/
+**/node_modules/
+.idea/
+
+# Google OAuth sensitive files
+/calendar-mcp-server/credentials/
+/calendar-mcp-server/tokens/
+**/credentials.json
+**/StoredCredential
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Build files
+**/target/
+**/node_modules/

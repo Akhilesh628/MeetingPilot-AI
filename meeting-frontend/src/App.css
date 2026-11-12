@@ -1,0 +1,1189 @@
+
+/* ==========================================
+   MEETINGPILOT AI - COMPLETE APP THEME
+========================================== */
+
+/* DARK THEME DEFAULT */
+:root {
+  --app-bg: #0b1120;
+  --sidebar-bg: #111a2b;
+  --header-bg: #0b1120;
+  --card-bg: #19263b;
+  --input-bg: #19263b;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+
+  --border-color: #29364b;
+  --accent: #2563eb;
+  --hover-bg: #243149;
+
+  --assistant-bg: #19263b;
+  --assistant-text: #f8fafc;
+
+  --user-bg: #2563eb;
+  --user-text: #ffffff;
+}
+
+/* LIGHT THEME */
+
+/* DEFAULT DARK THEME */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --app-bg: #171329;
+  --sidebar-bg: #211a38;
+  --header-bg: #211a38;
+  --card-bg: #2c2447;
+  --input-bg: #2c2447;
+
+  --text-primary: #f8f7ff;
+  --text-secondary: #b8afd3;
+
+  --border-color: #40365f;
+  --accent: #a78bfa;
+  --hover-bg: #382d58;
+
+  --assistant-bg: #2c2447;
+  --assistant-text: #f8f7ff;
+
+  --user-bg: #7047eb;
+  --user-text: #ffffff;
+}
+
+/* PREMIUM PURPLE LIGHT THEME */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --app-bg: #f7f5ff;
+  --sidebar-bg: #ffffff;
+  --header-bg: #ffffff;
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+
+  --text-primary: #3b3a20;
+  --text-secondary: #77718d;
+
+  --border-color: #e8e2f5;
+  --accent: #7047eb;
+  --hover-bg: #f0ebff;
+
+  --assistant-bg: #ffffff;
+  --assistant-text: #25203b;
+
+  --user-bg: #7047eb;
+  --user-text: #ffffff;
+}
+
+/* ==========================================
+   GLOBAL STYLES
+========================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  background: var(--app-bg);
+  color: var(--text-primary);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+/* ==========================================
+   MAIN APP LAYOUT
+========================================== */
+
+.app-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--app-bg);
+  color: var(--text-primary);
+}
+
+.main-panel {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  flex-direction: column;
+  background: var(--app-bg);
+  color: var(--text-primary);
+}
+
+/* ==========================================
+   SIDEBAR
+========================================== */
+
+.sidebar {
+  width: 245px;
+  min-width: 245px;
+  min-height: 100vh;
+  background: var(--sidebar-bg);
+  color: var(--text-primary);
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar h1,
+.sidebar h2,
+.sidebar h3,
+.sidebar p,
+.sidebar span {
+  color: inherit;
+}
+
+.sidebar button,
+.sidebar a {
+  color: var(--text-secondary);
+}
+
+.sidebar button:hover,
+.sidebar a:hover {
+  background: var(--hover-bg);
+}
+
+/* ==========================================
+   HEADER / TOPBAR
+========================================== */
+
+.topbar {
+  min-height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.topbar h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 18px;
+}
+
+.topbar p {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.top-status {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.online-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+/* ==========================================
+   THEME TOGGLE BUTTON
+========================================== */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 14px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--hover-bg);
+  border-color: var(--accent);
+}
+
+/* ==========================================
+   WELCOME SECTION
+========================================== */
+
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 25px 20px;
+  background: var(--app-bg);
+  color: var(--text-primary);
+}
+
+.welcome h1 {
+  margin: 12px 0 5px;
+  color: var(--text-primary);
+  font-size: 22px;
+}
+
+.welcome p {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.welcome-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: var(--accent);
+  color: #ffffff;
+}
+
+/* ==========================================
+   SUGGESTION BUTTONS
+========================================== */
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.suggestions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 14px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 25px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.suggestions button:hover {
+  background: var(--hover-bg);
+  border-color: var(--accent);
+}
+
+.suggestions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   CHAT WINDOW
+========================================== */
+
+.chat-window {
+  flex: 1;
+  width: 100%;
+  min-height: 200px;
+  padding: 20px;
+  background: var(--app-bg);
+  color: var(--text-primary);
+  overflow-y: auto;
+}
+
+/* AI ASSISTANT MESSAGE BUBBLE */
+.assistant-message,
+.message.assistant,
+.message-bubble.assistant,
+.chat-message.assistant {
+  background: var(--assistant-bg) !important;
+  color: var(--assistant-text) !important;
+  border: 1px solid var(--border-color);
+}
+
+/* ALL AI MESSAGE CONTENT */
+.assistant-message *,
+.message.assistant *,
+.message-bubble.assistant *,
+.chat-message.assistant * {
+  color: var(--assistant-text) !important;
+}
+
+/* AI MESSAGE LINKS */
+.assistant-message a,
+.message.assistant a {
+  color: #93c5fd !important;
+}
+
+/* USER MESSAGE BUBBLE */
+.user-message,
+.message.user,
+.message-bubble.user,
+.chat-message.user {
+  background: var(--user-bg) !important;
+  color: var(--user-text) !important;
+}
+
+/* ALL USER MESSAGE CONTENT */
+.user-message *,
+.message.user *,
+.message-bubble.user *,
+.chat-message.user * {
+  color: var(--user-text) !important;
+}
+
+/* ==========================================
+   CHAT INPUT
+========================================== */
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text-primary);
+}
+
+.chat-input input,
+.chat-input textarea {
+  background: transparent;
+  color: var(--text-primary);
+  border: none;
+  outline: none;
+}
+
+.chat-input input::placeholder,
+.chat-input textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+/* ==========================================
+   GENERAL INPUTS
+========================================== */
+
+input,
+textarea {
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.footer {
+  padding: 15px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--app-bg);
+}
+
+/* ==========================================
+   SMOOTH THEME TRANSITION
+========================================== */
+
+.app-layout,
+.app-layout .sidebar,
+.app-layout .main-panel,
+.app-layout .topbar,
+.app-layout .welcome,
+.app-layout .chat-window,
+.app-layout .theme-toggle,
+.app-layout .chat-input {
+  transition:
+          background-color 0.25s ease,
+          color 0.25s ease,
+          border-color 0.25s ease;
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+========================================== */
+
+@media (max-width: 768px) {
+
+  .sidebar {
+    width: 75px;
+    min-width: 75px;
+  }
+
+  .topbar {
+    padding: 12px 15px;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .theme-toggle {
+    padding: 9px;
+  }
+
+  .theme-toggle span {
+    display: none;
+  }
+
+  .welcome h1 {
+    font-size: 18px;
+  }
+
+  .suggestions {
+    gap: 7px;
+  }
+
+  .suggestions button {
+    font-size: 11px;
+  }
+}
+
+/* ==========================================
+   FINAL FIX - CHAT TEXT VISIBILITY
+========================================== */
+
+/* ==========================================
+   MEETINGPILOT AI - FINAL THEME FIX
+========================================== */
+
+/* LIGHT THEME */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --app-bg: #f0f7ff;
+  --sidebar-bg: #ffffff;
+  --header-bg: #ffffff;
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+
+  --text-primary: #172b4d;
+  --text-secondary: #64748b;
+
+  --border-color: #dbeafe;
+  --accent: #2563eb;
+  --hover-bg: #eff6ff;
+
+  --assistant-bg: #ffffff;
+  --assistant-text: #243b5a;
+
+  --user-bg: #0284c7;
+  --user-text: #ffffff;
+}
+
+/* DARK THEME */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --app-bg: #0b1120;
+  --sidebar-bg: #111a2b;
+  --header-bg: #111a2b;
+  --card-bg: #19263b;
+  --input-bg: #19263b;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+
+  --border-color: #29364b;
+  --accent: #3b82f6;
+  --hover-bg: #243149;
+
+  --assistant-bg: #19263b;
+  --assistant-text: #f8fafc;
+
+  --user-bg: #2563eb;
+  --user-text: #ffffff;
+}
+
+/* GLOBAL */
+body,
+#root,
+.app-layout,
+.main-panel {
+  background: var(--app-bg) !important;
+  color: var(--text-primary);
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--sidebar-bg) !important;
+  color: var(--text-primary) !important;
+  border-right: 1px solid var(--border-color);
+}
+
+.brand,
+.brand span {
+  color: var(--text-primary) !important;
+}
+
+.brand-icon {
+  background: var(--accent) !important;
+  color: #ffffff !important;
+}
+
+.new-chat {
+  background: var(--accent) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.new-chat svg {
+  color: #ffffff !important;
+}
+
+.new-chat:hover {
+  filter: brightness(0.92);
+}
+
+.nav-item {
+  color: var(--text-secondary) !important;
+}
+
+.nav-item svg {
+  color: var(--text-secondary) !important;
+}
+
+.nav-item.active {
+  background: var(--hover-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+.nav-item.active svg {
+  color: var(--accent) !important;
+}
+
+.sidebar-footer {
+  color: var(--text-secondary) !important;
+}
+
+/* HEADER */
+.topbar {
+  background: var(--header-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* WELCOME */
+.welcome {
+  background: var(--app-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+.welcome h1 {
+  color: var(--text-primary) !important;
+}
+
+.welcome p {
+  color: var(--text-secondary) !important;
+}
+
+/* SUGGESTIONS */
+.suggestions button {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* CHAT WINDOW */
+.chat-window {
+  background: var(--app-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* MESSAGE ROW */
+.message-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+/* USER MESSAGE ALIGNMENT */
+.message-row.user {
+  flex-direction: row-reverse;
+}
+
+/* MESSAGE AVATAR */
+.message-row .avatar {
+  flex-shrink: 0;
+  color: #ffffff !important;
+  background: var(--accent) !important;
+}
+
+/* MESSAGE NAME */
+.message-name {
+  color: var(--text-secondary) !important;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+/* AI MESSAGE */
+.message-row.assistant .message-text {
+  background: var(--assistant-bg) !important;
+  color: var(--assistant-text) !important;
+  border: 1px solid var(--border-color);
+}
+
+/* USER MESSAGE */
+.message-row.user .message-text {
+  background: var(--user-bg) !important;
+  color: var(--user-text) !important;
+  border: none;
+}
+
+/* CHAT MESSAGE TEXT */
+.message-text {
+  padding: 16px 20px;
+  border-radius: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+/* CHAT INPUT */
+.chat-input {
+  background: var(--input-bg) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.chat-input input {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+.chat-input input::placeholder {
+  color: var(--text-secondary) !important;
+}
+
+.chat-input button {
+  background: var(--accent) !important;
+  color: #ffffff !important;
+}
+
+.chat-input button svg {
+  color: #ffffff !important;
+}
+
+/* TYPING INDICATOR */
+.typing {
+  color: var(--text-secondary) !important;
+}
+
+/* FOOTER */
+.footer {
+  background: var(--app-bg) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* SMOOTH TRANSITION */
+* {
+  transition:
+          background-color 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease;
+}
+
+
+/* =====================================
+   LARGER MEETINGPILOT CHAT MESSAGES
+===================================== */
+
+/* Chat window */
+.chat-window {
+  width: 100%;
+  max-width: 1400px !important;
+  padding: 30px 45px !important;
+  margin: 0 auto;
+}
+
+/* AI message bubble */
+.assistant-message,
+.message.assistant,
+.message-bubble.assistant,
+.chat-message.assistant {
+  width: 100% !important;
+  max-width: 1100px !important;
+  min-height: 120px;
+  padding: 28px 32px !important;
+  font-size: 16px !important;
+  line-height: 1.9 !important;
+  border-radius: 16px !important;
+  box-sizing: border-box;
+}
+
+/* User message bubble */
+.user-message,
+.message.user,
+.message-bubble.user,
+.chat-message.user {
+  max-width: 850px !important;
+  padding: 20px 28px !important;
+  font-size: 16px !important;
+  line-height: 1.8 !important;
+  border-radius: 16px !important;
+}
+
+/* Message spacing */
+.message-row {
+  margin-bottom: 28px !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .chat-window {
+    padding: 15px !important;
+  }
+
+  .assistant-message,
+  .message.assistant,
+  .message-bubble.assistant,
+  .chat-message.assistant {
+    max-width: 100% !important;
+    padding: 18px !important;
+    font-size: 14px !important;
+  }
+}
+/* =====================================
+   MEETINGPILOT - CLEAN WHITE & SKY BLUE
+===================================== */
+
+/* Light Theme */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --app-bg: #f0f7ff;
+  --sidebar-bg: #ffffff;
+  --header-bg: #ffffff;
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+
+  --text-primary: #172b4d;
+  --text-secondary: #64748b;
+
+  --border-color: #dbeafe;
+  --accent: #2563eb;
+  --hover-bg: #eff6ff;
+
+  --assistant-bg: #ffffff;
+  --assistant-text: #243b5a;
+
+  --user-bg: #0284c7;
+  --user-text: #ffffff;
+}
+
+/* Sidebar */
+:root[data-theme="light"] .sidebar {
+  background: #ffffff;
+  color: #172b4d;
+}
+
+/* Sidebar title */
+:root[data-theme="light"] .sidebar h1,
+:root[data-theme="light"] .sidebar h2 {
+  color: #172b4d !important;
+}
+
+/* New conversation button */
+:root[data-theme="light"] .sidebar .new-chat-btn,
+:root[data-theme="light"] .sidebar .new-chat-button {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* Sidebar navigation */
+:root[data-theme="light"] .sidebar button:not(.new-chat-btn):not(.new-chat-button) {
+  color: #334155;
+}
+
+/* Chat text */
+:root[data-theme="light"] .chat-window {
+  color: #172b4d !important;
+}
+
+:root[data-theme="light"] .assistant-message,
+:root[data-theme="light"] .message.assistant,
+:root[data-theme="light"] .message-bubble.assistant,
+:root[data-theme="light"] .chat-message.assistant {
+  background: #ffffff !important;
+  color: #243b5a !important;
+}
+
+:root[data-theme="light"] .user-message,
+:root[data-theme="light"] .message.user,
+:root[data-theme="light"] .message-bubble.user,
+:root[data-theme="light"] .chat-message.user {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+/* =========================================
+   MEETINGPILOT - LIGHT THEME FIX
+========================================= */
+
+:root[data-theme="light"] {
+  --app-bg: #f0f7ff;
+  --sidebar-bg: #ffffff;
+  --header-bg: #ffffff;
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+
+  --text-primary: #172b4d;
+  --text-secondary: #64748b;
+
+  --border-color: #dbeafe;
+  --accent: #2563eb;
+  --hover-bg: #eff6ff;
+
+  --assistant-bg: #ffffff;
+  --assistant-text: #243b5a;
+
+  --user-bg: #0284c7;
+  --user-text: #ffffff;
+}
+
+/* Sidebar */
+:root[data-theme="light"] .sidebar {
+  background: #ffffff !important;
+  color: #172b4d !important;
+  border-right: 1px solid #dbeafe;
+}
+
+/* Brand */
+:root[data-theme="light"] .brand,
+:root[data-theme="light"] .brand span {
+  color: #172b4d !important;
+}
+
+:root[data-theme="light"] .brand-icon {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* New conversation */
+:root[data-theme="light"] .new-chat {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+:root[data-theme="light"] .new-chat svg {
+  color: #ffffff !important;
+}
+
+:root[data-theme="light"] .new-chat:hover {
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+/* Navigation */
+:root[data-theme="light"] .nav-item {
+  color: #475569 !important;
+  background: transparent;
+}
+
+:root[data-theme="light"] .nav-item svg {
+  color: #64748b !important;
+}
+
+:root[data-theme="light"] .nav-item:hover {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+:root[data-theme="light"] .nav-item.active {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+:root[data-theme="light"] .nav-item.active svg {
+  color: #1d4ed8 !important;
+}
+
+/* Sidebar footer */
+:root[data-theme="light"] .sidebar-footer {
+  color: #64748b !important;
+}
+
+/* Chat input */
+:root[data-theme="light"] .chat-input {
+  background: #ffffff !important;
+  border: 1px solid #bfdbfe !important;
+  color: #172b4d !important;
+}
+
+:root[data-theme="light"] .chat-input input {
+  background: transparent !important;
+  color: #172b4d !important;
+}
+
+:root[data-theme="light"] .chat-input input::placeholder {
+  color: #94a3b8 !important;
+}
+
+:root[data-theme="light"] .chat-input button {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+:root[data-theme="light"] .chat-input button svg {
+  color: #ffffff !important;
+}
+
+/* Suggestion buttons */
+:root[data-theme="light"] .suggestions button {
+  background: #ffffff !important;
+  color: #1e40af !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+/* Chat background */
+:root[data-theme="light"] .chat-window {
+  background: #f0f7ff !important;
+}
+
+/* AI message */
+:root[data-theme="light"] .assistant-message,
+:root[data-theme="light"] .message.assistant,
+:root[data-theme="light"] .message-bubble.assistant,
+:root[data-theme="light"] .chat-message.assistant {
+  background: #ffffff !important;
+  color: #243b5a !important;
+}
+
+/* User message */
+:root[data-theme="light"] .user-message,
+:root[data-theme="light"] .message.user,
+:root[data-theme="light"] .message-bubble.user,
+:root[data-theme="light"] .chat-message.user {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+.meeting-table-wrapper {
+  width: 100%;
+  margin: 12px 0 18px;
+  overflow-x: auto;
+}
+
+.meeting-details-table {
+  width: 100%;
+  display: table;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border: 1px solid #dbe5f2;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.meeting-details-table th,
+.meeting-details-table td {
+  display: table-cell;
+  width: 100%;
+  padding: 13px 15px;
+  text-align: left;
+  vertical-align: middle;
+  border: none;
+  background: #ffffff;
+  color: #24344d;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.meeting-details-table thead th {
+  font-weight: 400;
+}
+
+.meeting-details-table tr + tr th,
+.meeting-details-table tr + tr td {
+  border-top: 1px solid #dbe5f2;
+}
+
+.meeting-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.meeting-link:hover {
+  text-decoration: underline;
+}
+
+.meetings-page,
+.settings-page {
+  padding: 28px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.meetings-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 15px;
+}
+
+.meetings-toolbar h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.meetings-toolbar p,
+.settings-page > p {
+  color: var(--text-secondary);
+}
+
+.refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.meetings-result {
+  padding: 22px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--card-bg);
+  overflow-wrap: anywhere;
+}
+
+.meetings-result table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.meetings-result th,
+.meetings-result td {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.meeting-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.meetings-loading,
+.empty-meetings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  color: var(--text-secondary);
+}
+
+.meetings-error {
+  padding: 18px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 10px;
+}
+
+.settings-card {
+  padding: 22px;
+  margin-top: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--card-bg);
+}
+
+.spin {
+  animation: meeting-spin 1s linear infinite;
+}
+
+@keyframes meeting-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Center header title and subtitle */
+
+.topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center !important;
+  min-height: 80px;
+  padding: 15px 30px;
+}
+
+.header-info {
+  text-align: center;
+  width: 100%;
+}
+
+.header-info h2 {
+  margin: 0;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.header-info p {
+  margin: 6px 0 0;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Keep status and theme toggle on the right */
+.header-actions {
+  position: absolute;
+  right: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}

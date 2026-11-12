@@ -1,0 +1,28 @@
+
+server:
+  port: 8082
+
+spring:
+  application:
+    name: calendar-mcp-server
+
+  ai:
+    mcp:
+      server:
+        name: calendar-mcp-server
+        version: 1.0.0
+        protocol: STREAMABLE
+        type: SYNC
+        instructions: "Google Calendar MCP Server"
+        streamable-http:
+          mcp-endpoint: /mcp
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+google:
+  credentials-path: ${GOOGLE_CREDENTIALS_PATH:D:/AI/MeetingAgent/MeetingPilot-AI/calendar-mcp-server/credentials/credentials.json}
+  token-directory: ${GOOGLE_TOKEN_DIRECTORY:D:/AI/MeetingAgent/MeetingPilot-AI/calendar-mcp-server/tokens}
