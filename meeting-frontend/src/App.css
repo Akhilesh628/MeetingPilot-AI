@@ -1187,3 +1187,32 @@ body,
   align-items: center;
   gap: 15px;
 }
+
+/* =====================================
+   MEETINGPILOT VOICE CHAT BUTTON
+===================================== */
+
+.voice-mode-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 10px 17px;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.voice-mode-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.voice-mode-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

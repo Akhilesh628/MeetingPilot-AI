@@ -1,10 +1,11 @@
 
 import { useState, useEffect } from "react";
 
-import Sidebar from "./components/Sidebar";
-import ChatWindow from "./components/ChatWindow";
-import ChatInput from "./components/ChatInput";
-import DashboardAnalytics from "./components/DashboardAnalytics";
+import Sidebar from "./components/sidebar";
+import ChatWindow from "./components/chatWindow";
+import ChatInput from "./components/chatInput";
+import VoiceChat from "./components/VoiceChat";
+
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -17,7 +18,8 @@ import {
   Moon,
   RefreshCw,
   Video,
-  AlertCircle
+  AlertCircle,
+  Mic
 } from "lucide-react";
 
 import "./App.css";
@@ -55,16 +57,19 @@ export default function App() {
   const [conversationId, setConversationId] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Voice chat state
+  const [voiceOpen, setVoiceOpen] = useState(false);
+
   // Meetings page state
   const [meetings, setMeetings] = useState("");
   const [meetingsLoading, setMeetingsLoading] = useState(false);
   const [meetingsError, setMeetingsError] = useState("");
   const [meetingsConversationId, setMeetingsConversationId] = useState(null);
 
-  // Send message to AI backend
+  // Existing chat API reused for both text and voice
   const handleSend = async (message) => {
 
-    if (!message.trim() || loading) return;
+    if (!message.trim() || loading) return null;
 
     setMessages(previous => [
       ...previous,
@@ -92,18 +97,24 @@ export default function App() {
         }
       ]);
 
+      return result.response;
+
     } catch (error) {
       console.error("MeetingPilot API Error:", error);
+
+      const errorMessage =
+          error.response?.data?.message ||
+          "Unable to connect to MeetingPilot.";
 
       setMessages(previous => [
         ...previous,
         {
           role: "assistant",
-          content:
-              error.response?.data?.message ||
-              "Unable to connect to MeetingPilot."
+          content: errorMessage
         }
       ]);
+
+      return null;
 
     } finally {
       setLoading(false);
@@ -156,6 +167,7 @@ export default function App() {
 
     setConversationId(null);
     setActivePage("chat");
+    setVoiceOpen(false);
 
     setMessages([
       {
@@ -210,6 +222,19 @@ export default function App() {
                 AI Assistant Online
               </div>
 
+              {/* Voice Chat Button */}
+              {activePage === "chat" && (
+                  <button
+                      type="button"
+                      className="voice-mode-button"
+                      onClick={() => setVoiceOpen(true)}
+                      disabled={loading}
+                  >
+                    <Mic size={18} />
+                    Voice Chat
+                  </button>
+              )}
+
               <button
                   type="button"
                   className="theme-toggle"
@@ -222,10 +247,10 @@ export default function App() {
                 }
 
                 <span>
-                                {theme === "dark"
-                                    ? "Light Mode"
-                                    : "Dark Mode"}
-                            </span>
+                {theme === "dark"
+                    ? "Light Mode"
+                    : "Dark Mode"}
+              </span>
 
               </button>
 
@@ -462,6 +487,14 @@ export default function App() {
           </footer>
 
         </main>
+
+        {/* Voice Chat Modal */}
+        {voiceOpen && (
+            <VoiceChat
+                onSend={handleSend}
+                onClose={() => setVoiceOpen(false)}
+            />
+        )}
 
       </div>
   );
