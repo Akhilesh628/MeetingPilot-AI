@@ -12,7 +12,12 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/meetings")
-@CrossOrigin(origins = "http://localhost:5175")
+@CrossOrigin(
+        origins = {
+                "http://localhost:5175",
+                "https://meetingpilot-ai.svksharma252.workers.dev"
+        }
+)
 public class MeetingChatController {
 
     private final MeetingAgentService meetingAgentService;

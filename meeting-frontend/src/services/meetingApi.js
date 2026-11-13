@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:8081/api/meetings",
+    baseURL: "https://meetingpilot-ai-agent.onrender.com/api/meetings",
     headers: {
         "Content-Type": "application/json"
     }
