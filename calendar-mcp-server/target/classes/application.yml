@@ -1,6 +1,6 @@
 
 server:
-  port: 8082
+  port: ${PORT:8082}
 
 spring:
   application:
@@ -24,5 +24,5 @@ management:
         include: health,info
 
 google:
-  credentials-path: ${GOOGLE_CREDENTIALS_PATH:D:/AI/MeetingAgent/MeetingPilot-AI/calendar-mcp-server/credentials/credentials.json}
-  token-directory: ${GOOGLE_TOKEN_DIRECTORY:D:/AI/MeetingAgent/MeetingPilot-AI/calendar-mcp-server/tokens}
+  credentials-path: ${GOOGLE_CREDENTIALS_PATH:./credentials/credentials.json}
+  refresh-token: ${GOOGLE_REFRESH_TOKEN:}

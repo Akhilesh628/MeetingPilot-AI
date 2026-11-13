@@ -1,1 +1,7 @@
+com\meeting\mcp\config\GoogleCalendarConfig.class
+com\meeting\mcp\service\GoogleCalendarService.class
+com\meeting\mcp\tools\CalendarMcpTools.class
+com\meeting\mcp\dto\MeetingRequest.class
+com\meeting\mcp\dto\MeetingResponse.class
+com\meeting\mcp\token\ExportRefreshToken.class
 com\meeting\mcp\CalendarMcpApplication.class
