@@ -12,7 +12,7 @@ meetings, application settings, dark theme, a text-chat conversation,
 and the full-screen voice assistant.
 
 **Frontend address shown:** `http://localhost:5175`
-
+![img.png](img.png)
 ## 2. Screenshots
 
 > Image paths below assume the screenshots are copied into
@@ -42,7 +42,8 @@ The main dashboard includes:
 
 ### 2.2 My Meetings --- Upcoming Calendar Events
 
-**Suggested image filename:** `meetingpilot-meetings.png`
+**Suggested image filename:** 
+![img_1.png](img_1.png)
 
 ![MeetingPilot AI upcoming meetings
 page](images/meetingpilot-meetings.png)
@@ -75,7 +76,7 @@ dated `2026-11-15`, with a Google Meet link.
 
 **Suggested image filename:** `meetingpilot-settings.png`
 
-![MeetingPilot AI settings page](images/meetingpilot-settings.png)
+![img_2.png](img_2.png)![MeetingPilot AI settings page](images/meetingpilot-settings.png)
 
 The Settings page contains preference and integration information in
 separate sections:
@@ -93,7 +94,7 @@ The sidebar provides navigation back to AI Assistant and Meetings.
 
 **Suggested image filename:** `meetingpilot-dark-mode.png`
 
-![MeetingPilot AI dark theme](images/meetingpilot-dark-mode.png)
+![img_3.png](img_3.png)
 
 The dark-theme screenshot shows the AI Assistant dashboard using a dark
 colour palette.
@@ -112,7 +113,7 @@ Visible elements include:
 
 ### 2.5 AI Assistant --- Text Conversation
 
-**Suggested image filename:** `meetingpilot-chat-conversation.png`
+**Suggested image filename:** ![img_4.png](img_4.png)`meetingpilot-chat-conversation.png`
 
 ![MeetingPilot AI text
 conversation](images/meetingpilot-chat-conversation.png)
@@ -132,7 +133,7 @@ does not show the final availability results.
 
 ### 2.6 Voice Chat --- Full-Screen Voice Assistant
 
-**Suggested image filename:** `meetingpilot-voice-chat.png`
+**Suggested image filename:** ![img_5.png](img_5.png)`meetingpilot-voice-chat.png`
 
 ![MeetingPilot AI full-screen voice
 assistant](images/meetingpilot-voice-chat.png)
