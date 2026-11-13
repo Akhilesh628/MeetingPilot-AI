@@ -1,0 +1,29 @@
+
+# Build stage
+FROM maven:3.9-eclipse-temurin-21 AS build
+
+WORKDIR /app
+
+# Copy parent Maven POM
+COPY pom.xml .
+
+# Copy module POM files
+COPY meeting-agent/pom.xml meeting-agent/pom.xml
+COPY calendar-mcp-server/pom.xml calendar-mcp-server/pom.xml
+
+# Copy Meeting Agent source code
+COPY meeting-agent/src meeting-agent/src
+
+# Build Meeting Agent with parent dependencies
+RUN mvn -B -pl meeting-agent -am clean package -DskipTests
+
+# Runtime stage
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+COPY --from=build /app/meeting-agent/target/meeting-agent-1.0.0.jar app.jar
+
+EXPOSE 10000
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
