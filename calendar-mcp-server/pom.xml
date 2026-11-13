@@ -18,10 +18,14 @@
 
     <dependencies>
 
-        <!-- MCP Server using Streamable HTTP -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
 
 <!--        &lt;!&ndash; Google Calendar API &ndash;&gt;-->
@@ -32,12 +36,6 @@
 <!--        </dependency>-->
 
         <!-- Google Calendar API -->
-        <!-- Spring MCP Server -->
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
-        </dependency>
-
         <!-- Source: https://mvnrepository.com/artifact/com.google.apis/google-api-services-calendar -->
         <dependency>
             <groupId>com.google.apis</groupId>
@@ -46,12 +44,6 @@
             <scope>compile</scope>
         </dependency>
         <!-- Google API Client -->
-        <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>2.8.1</version>
-        </dependency>
-
         <!-- OAuth -->
         <dependency>
             <groupId>com.google.oauth-client</groupId>
@@ -63,13 +55,6 @@
             <artifactId>google-api-client</artifactId>
             <version>2.8.1</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.google.oauth-client</groupId>
-            <artifactId>google-oauth-client-jetty</artifactId>
-            <version>1.39.0</version>
-        </dependency>
-
 
         <!-- Validation -->
         <dependency>

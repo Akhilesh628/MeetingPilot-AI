@@ -1,7 +1,5 @@
 package com.meeting.mcp.dto;
 
-
-
 public record MeetingResponse(
         boolean success,
         String eventId,
@@ -10,4 +8,5 @@ public record MeetingResponse(
         String endDateTime,
         String meetLink,
         String message
-) {}
+) {
+}

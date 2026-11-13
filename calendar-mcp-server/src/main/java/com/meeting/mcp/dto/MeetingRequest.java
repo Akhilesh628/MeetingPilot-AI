@@ -1,6 +1,5 @@
 package com.meeting.mcp.dto;
 
-
 import java.util.List;
 
 public record MeetingRequest(
@@ -10,7 +9,5 @@ public record MeetingRequest(
         String endDateTime,
         String timeZone,
         List<String> attendeeEmails
-)
-{
-
+) {
 }

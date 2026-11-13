@@ -1,6 +1,5 @@
 package com.meeting.mcp.tools;
 
-
 import com.meeting.mcp.dto.MeetingRequest;
 import com.meeting.mcp.dto.MeetingResponse;
 import com.meeting.mcp.service.GoogleCalendarService;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
-import com.google.api.services.calendar.model.Event;
+
 @Component
 public class CalendarMcpTools {
 
@@ -31,7 +30,7 @@ public class CalendarMcpTools {
             @McpToolParam(
                     description = "Number of days to look ahead, maximum 90",
                     required = true)
-            int days) throws Exception {
+            int days) {
 
         return calendarService.getUpcomingMeetings(days);
     }
@@ -55,10 +54,13 @@ public class CalendarMcpTools {
             @McpToolParam(
                     description = "Meeting duration in minutes",
                     required = true)
-            int durationMinutes) throws Exception {
+            int durationMinutes) {
 
         return calendarService.findAvailableSlots(
-                date, timeZone, durationMinutes);
+                date,
+                timeZone,
+                durationMinutes
+        );
     }
 
     @McpTool(
@@ -80,10 +82,13 @@ public class CalendarMcpTools {
             @McpToolParam(
                     description = "Timezone, for example Asia/Kolkata",
                     required = true)
-            String timeZone) throws Exception {
+            String timeZone) {
 
         return calendarService.checkAvailability(
-                startDateTime, endDateTime, timeZone);
+                startDateTime,
+                endDateTime,
+                timeZone
+        );
     }
 
     @McpTool(
@@ -121,7 +126,7 @@ public class CalendarMcpTools {
             @McpToolParam(
                     description = "Comma-separated attendee email addresses",
                     required = false)
-            String attendeeEmails) throws Exception {
+            String attendeeEmails) {
 
         List<String> emails =
                 attendeeEmails == null || attendeeEmails.isBlank()
@@ -167,10 +172,14 @@ public class CalendarMcpTools {
             @McpToolParam(
                     description = "Timezone",
                     required = true)
-            String timeZone) throws Exception {
+            String timeZone) {
 
         return calendarService.updateMeeting(
-                eventId, newStart, newEnd, timeZone);
+                eventId,
+                newStart,
+                newEnd,
+                timeZone
+        );
     }
 
     @McpTool(
@@ -182,72 +191,8 @@ public class CalendarMcpTools {
             @McpToolParam(
                     description = "Google Calendar event ID",
                     required = true)
-            String eventId) throws Exception {
+            String eventId) {
 
         return calendarService.cancelMeeting(eventId);
     }
-
-
-
-    @McpTool(
-            name = "update_meeting",
-            description = """
-        Update an existing Google Calendar meeting.
-
-        Can update meeting title, start time and end time.
-        Only modify the fields requested by the user.
-        Preserve attendees and Google Meet conference details.
-
-        Date times must be RFC3339 timestamps with timezone offset.
-        Example: 2026-11-12T16:00:00+05:30
-
-        If only start time is changed, preserve existing duration.
-        """
-    )
-    public String updateTheMeeting(
-            @McpToolParam(description = "Google Calendar event ID")
-            String eventId,
-
-            @McpToolParam(
-                    description = "New meeting title. Leave empty to preserve existing title",
-                    required = false
-            )
-            String newTitle,
-
-            @McpToolParam(
-                    description = "New start datetime in RFC3339 format, or empty to preserve",
-                    required = false
-            )
-            String newStartDateTime,
-
-            @McpToolParam(
-                    description = "New end datetime in RFC3339 format, or empty to preserve",
-                    required = false
-            )
-            String newEndDateTime
-    ) {
-
-        try {
-            Event updated = calendarService.updateTheMeeting(
-                    eventId,
-                    newTitle,
-                    newStartDateTime,
-                    newEndDateTime
-            );
-
-            return """
-            Meeting updated successfully.
-
-            Title: %s
-            Event ID: %s
-            """.formatted(
-                    updated.getSummary(),
-                    updated.getId()
-            );
-
-        } catch (Exception e) {
-            return "Unable to update meeting: " + e.getMessage();
-        }
-    }
-
 }

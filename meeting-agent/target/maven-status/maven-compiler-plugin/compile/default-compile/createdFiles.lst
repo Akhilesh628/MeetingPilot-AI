@@ -1,1 +1,8 @@
+com\meeting\agent\dto\ChatRequest.class
+com\meeting\agent\config\McpClientConfig.class
 com\meeting\agent\MeetingAgentApplication.class
+com\meeting\agent\dto\ChatResponse.class
+com\meeting\agent\service\MeetingAgentService.class
+com\meeting\agent\agent\MeetingOrchestratorAgent.class
+com\meeting\agent\controller\MeetingChatController.class
+com\meeting\agent\memory\MeetingMemoryService.class

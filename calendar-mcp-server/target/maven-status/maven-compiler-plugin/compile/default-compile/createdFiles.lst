@@ -1,1 +1,10 @@
+com\meeting\mcp\config\GoogleCalendarConfig.class
+com\meeting\mcp\service\GoogleCalendarService.class
+com\meeting\mcp\tools\CalendarMcpTools.class
+com\meeting\mcp\dto\MeetingRequest.class
+com\meeting\mcp\dto\MeetingResponse.class
+com\meeting\mcp\exception\CalendarOperationException.class
+com\meeting\mcp\service\GoogleCalendarService$CalendarCall.class
 com\meeting\mcp\CalendarMcpApplication.class
+com\meeting\mcp\exception\GlobalExceptionHandler$ApiError.class
+com\meeting\mcp\exception\GlobalExceptionHandler.class

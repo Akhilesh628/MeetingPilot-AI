@@ -3,11 +3,13 @@ package com.meeting.mcp.service;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.model.Events;
 import com.google.api.services.calendar.model.FreeBusyCalendar;
 import com.google.api.services.calendar.model.FreeBusyResponse;
 import com.google.api.services.calendar.model.TimePeriod;
 import com.meeting.mcp.dto.MeetingRequest;
 import com.meeting.mcp.dto.MeetingResponse;
+import com.meeting.mcp.exception.CalendarOperationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -139,31 +140,50 @@ class GoogleCalendarServiceTest {
     }
 
     @Test
-    void updateMeetingReturnsConflictWithoutUpdatingEvent() throws Exception {
-        TimePeriod busy = new TimePeriod()
-                .setStart(new com.google.api.client.util.DateTime("2027-01-10T10:00:00+05:30"))
-                .setEnd(new com.google.api.client.util.DateTime("2027-01-10T10:30:00+05:30"));
-        when(calendar.freebusy().query(any()).execute())
-                .thenReturn(freeBusyResponse(busy));
+    void updateMeetingRejectsConflictingTimeWithoutUpdatingEvent() throws Exception {
+        Event existing = new Event().setId("event-123");
+        Event conflict = new Event()
+                .setId("other-event")
+                .setStart(dateTime("2027-01-10T10:00:00+05:30"))
+                .setEnd(dateTime("2027-01-10T10:30:00+05:30"));
+        when(calendar.events().get("primary", "event-123").execute())
+                .thenReturn(existing);
+        when(calendar.events()
+                .list("primary")
+                .setTimeMin(any())
+                .setTimeMax(any())
+                .setSingleEvents(true)
+                .setShowDeleted(false)
+                .setMaxResults(2500)
+                .execute())
+                .thenReturn(new Events().setItems(List.of(conflict)));
 
-        String result = service.updateMeeting(
+        assertThrows(CalendarOperationException.class, () -> service.updateMeeting(
                 "event-123",
                 "2027-01-10T10:00:00+05:30",
                 "2027-01-10T10:30:00+05:30",
-                ZONE);
+                ZONE));
 
-        assertTrue(result.startsWith("UNAVAILABLE:"));
-        verify(calendar.events(), never()).get(any(), any());
         verify(calendar.events(), never()).patch(any(), any(), any(Event.class));
     }
 
     @Test
     void updateMeetingPatchesTheExistingEventWhenTheTimeIsAvailable() throws Exception {
-        when(calendar.freebusy().query(any()).execute())
-                .thenReturn(freeBusyResponse());
-        Event existing = new Event().setId("event-123");
+        Event existing = new Event()
+                .setId("event-123")
+                .setStart(dateTime("2027-01-10T09:00:00+05:30"))
+                .setEnd(dateTime("2027-01-10T09:30:00+05:30"));
         when(calendar.events().get("primary", "event-123").execute())
                 .thenReturn(existing);
+        when(calendar.events()
+                .list("primary")
+                .setTimeMin(any())
+                .setTimeMax(any())
+                .setSingleEvents(true)
+                .setShowDeleted(false)
+                .setMaxResults(2500)
+                .execute())
+                .thenReturn(new Events().setItems(List.of()));
         when(calendar.events()
                 .patch(eq("primary"), eq("event-123"), any(Event.class))
                 .setSendUpdates("all")
@@ -181,6 +201,8 @@ class GoogleCalendarServiceTest {
         verify(calendar.events()).patch(eq("primary"), eq("event-123"), eventCaptor.capture());
         assertEquals("2027-01-10T11:00:00.000+05:30",
                 eventCaptor.getValue().getStart().getDateTime().toStringRfc3339());
+        assertEquals("2027-01-10T11:30:00.000+05:30",
+                eventCaptor.getValue().getEnd().getDateTime().toStringRfc3339());
     }
 
     @Test
@@ -239,42 +261,13 @@ class GoogleCalendarServiceTest {
     }
 
     @Test
-    void updateTheMeetingPreservesDurationWhenOnlyStartChanges() throws Exception {
-        Event existing = new Event()
-                .setId("event-123")
-                .setStart(dateTime("2027-01-10T10:00:00+05:30"))
-                .setEnd(dateTime("2027-01-10T10:30:00+05:30"));
-        when(calendar.events().get("primary", "event-123").execute())
-                .thenReturn(existing);
-        when(calendar.events()
-                .patch(eq("primary"), eq("event-123"), any(Event.class))
-                .setConferenceDataVersion(1)
-                .execute())
-                .thenReturn(existing);
-
-        Event result = service.updateTheMeeting(
-                "event-123",
-                null,
-                "2027-01-10T11:00:00+05:30",
-                null);
-
-        assertEquals(existing, result);
-        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
-        verify(calendar.events()).patch(eq("primary"), eq("event-123"), eventCaptor.capture());
-        Event patch = eventCaptor.getValue();
-        assertEquals("2027-01-10T11:00:00.000+05:30",
-                patch.getStart().getDateTime().toStringRfc3339());
-        assertEquals("2027-01-10T11:30:00.000+05:30",
-                patch.getEnd().getDateTime().toStringRfc3339());
-        assertFalse(patch.containsKey("summary"));
-    }
-
-    @Test
-    void updateTheMeetingRequiresAnEventIdAndAtLeastOneField() {
+    void updateMeetingValidatesEventIdAndRangeBeforeCallingCalendar() {
         assertThrows(IllegalArgumentException.class,
-                () -> service.updateTheMeeting(" ", "title", null, null));
+                () -> service.updateMeeting(" ", "2027-01-10T11:00:00+05:30",
+                        "2027-01-10T11:30:00+05:30", ZONE));
         assertThrows(IllegalArgumentException.class,
-                () -> service.updateTheMeeting("event-123", " ", null, null));
+                () -> service.updateMeeting("event-123", "2027-01-10T11:30:00+05:30",
+                        "2027-01-10T11:00:00+05:30", ZONE));
 
         verify(calendar, never()).events();
     }
