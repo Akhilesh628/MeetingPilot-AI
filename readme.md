@@ -134,7 +134,7 @@ does not show the final availability results.
 ### 2.6 Voice Chat --- Full-Screen Voice Assistant
 
 **Suggested image filename:** ![img_5.png](img_5.png)`meetingpilot-voice-chat.png`
-
+![img_6.png](img_6.png)
 ![MeetingPilot AI full-screen voice
 assistant](images/meetingpilot-voice-chat.png)
 
