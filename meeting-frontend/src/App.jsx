@@ -19,7 +19,9 @@ import {
   RefreshCw,
   Video,
   AlertCircle,
-  Mic
+  Mic,
+  Menu,
+  X
 } from "lucide-react";
 
 import "./App.css";
@@ -45,6 +47,14 @@ export default function App() {
   // Page navigation
   const [activePage, setActivePage] = useState("chat");
 
+  // Mobile sidebar
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleNavigate = (page) => {
+    setActivePage(page);
+    setMobileMenuOpen(false);
+  };
+
   // Chat messages
   const [messages, setMessages] = useState([
     {
@@ -66,7 +76,7 @@ export default function App() {
   const [meetingsError, setMeetingsError] = useState("");
   const [meetingsConversationId, setMeetingsConversationId] = useState(null);
 
-  // Existing chat API reused for both text and voice
+  // Send chat message
   const handleSend = async (message) => {
 
     if (!message.trim() || loading) return null;
@@ -121,14 +131,13 @@ export default function App() {
     }
   };
 
-  // Fetch all upcoming meetings
+  // Fetch upcoming meetings
   const fetchMeetings = async () => {
 
     setMeetingsLoading(true);
     setMeetingsError("");
 
     try {
-
       const result = await sendMessage(
           "Show ALL my upcoming Google Calendar meetings for the next 7 days. Retrieve every matching event. Include meeting title, event ID, start time, end time and Google Meet link. Do not create, update or delete any event.",
           meetingsConversationId
@@ -138,7 +147,6 @@ export default function App() {
       setMeetings(result.response || "");
 
     } catch (error) {
-
       console.error("Meetings API Error:", error);
 
       setMeetingsError(
@@ -153,11 +161,9 @@ export default function App() {
 
   // Load meetings when Meetings page opens
   useEffect(() => {
-
     if (activePage === "meetings") {
       fetchMeetings();
     }
-
   }, [activePage]);
 
   // Start new conversation
@@ -167,6 +173,7 @@ export default function App() {
 
     setConversationId(null);
     setActivePage("chat");
+    setMobileMenuOpen(false);
     setVoiceOpen(false);
 
     setMessages([
@@ -180,13 +187,23 @@ export default function App() {
 
   return (
 
-      <div className="app-layout">
+      <div className={`app-layout ${mobileMenuOpen ? "mobile-menu-open" : ""}`}>
+
+        {/* Mobile sidebar backdrop */}
+        {mobileMenuOpen && (
+            <button
+                type="button"
+                className="sidebar-backdrop"
+                aria-label="Close navigation menu"
+                onClick={() => setMobileMenuOpen(false)}
+            />
+        )}
 
         {/* Sidebar */}
         <Sidebar
             onNewChat={newChat}
             activePage={activePage}
-            onNavigate={setActivePage}
+            onNavigate={handleNavigate}
         />
 
         {/* Main Panel */}
@@ -194,6 +211,17 @@ export default function App() {
 
           {/* Header */}
           <header className="topbar">
+
+            {/* Mobile hamburger button */}
+            <button
+                type="button"
+                className="mobile-menu-toggle"
+                onClick={() => setMobileMenuOpen(open => !open)}
+                aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
 
             <div className="header-info">
 
@@ -222,7 +250,7 @@ export default function App() {
                 AI Assistant Online
               </div>
 
-              {/* Voice Chat Button */}
+              {/* Voice Chat */}
               {activePage === "chat" && (
                   <button
                       type="button"
@@ -235,23 +263,20 @@ export default function App() {
                   </button>
               )}
 
+              {/* Theme Toggle */}
               <button
                   type="button"
                   className="theme-toggle"
                   onClick={toggleTheme}
               >
-
                 {theme === "dark"
                     ? <Sun size={19} />
                     : <Moon size={19} />
                 }
 
                 <span>
-                {theme === "dark"
-                    ? "Light Mode"
-                    : "Dark Mode"}
+                {theme === "dark" ? "Light Mode" : "Dark Mode"}
               </span>
-
               </button>
 
             </div>
@@ -260,7 +285,6 @@ export default function App() {
 
           {/* CHAT PAGE */}
           {activePage === "chat" && (
-
               <>
 
                 <section className="welcome">
@@ -329,7 +353,6 @@ export default function App() {
                 />
 
               </>
-
           )}
 
           {/* MEETINGS PAGE */}
@@ -365,21 +388,17 @@ export default function App() {
                 </div>
 
                 {meetingsLoading && (
-
                     <div className="meetings-loading">
                       <RefreshCw className="spin" size={30} />
                       <p>Loading your meetings...</p>
                     </div>
-
                 )}
 
                 {meetingsError && (
-
                     <div className="meetings-error">
                       <AlertCircle size={20} />
                       {meetingsError}
                     </div>
-
                 )}
 
                 {!meetingsLoading && !meetingsError && (
