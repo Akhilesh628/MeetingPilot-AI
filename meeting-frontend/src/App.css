@@ -1950,3 +1950,171 @@ body {
     min-width: 0 !important;
   }
 }
+
+/* ==========================================
+   ABOUT PAGE
+========================================== */
+
+.about-page {
+  width: 100%;
+  max-width: 1000px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 30px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.about-hero {
+  text-align: center;
+  padding: 25px 15px 35px;
+}
+
+.about-icon {
+  width: 75px;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  border-radius: 22px;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.about-hero h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.about-hero p {
+  color: var(--text-secondary, #64748b);
+  line-height: 1.7;
+}
+
+.about-card {
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color, #dbeafe);
+  border-radius: 14px;
+  background: var(--card-bg, #ffffff);
+}
+
+.about-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.about-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.about-info-row:last-child {
+  border-bottom: none;
+}
+
+.about-info-row span {
+  color: var(--text-secondary, #64748b);
+}
+
+.about-info-row strong {
+  text-align: right;
+}
+
+.tech-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tech-badge {
+  padding: 9px 14px;
+  border-radius: 20px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.about-features {
+  padding-left: 22px;
+  line-height: 2.2;
+  color: var(--text-primary, #1e293b);
+}
+
+.about-features li::marker {
+  color: #2563eb;
+}
+
+.about-footer {
+  text-align: center;
+  padding: 30px 15px;
+  color: var(--text-secondary, #64748b);
+}
+
+.about-footer-icon {
+  color: #2563eb;
+  margin-bottom: 10px;
+}
+
+.about-footer h3 {
+  color: var(--text-primary, #1e293b);
+  margin-bottom: 8px;
+}
+
+.about-footer p {
+  margin-bottom: 12px;
+}
+
+.about-footer span {
+  font-size: 13px;
+}
+
+/* DARK MODE */
+
+[data-theme="dark"] .about-card {
+  background: var(--card-bg, #1e293b);
+}
+
+[data-theme="dark"] .tech-badge {
+  background: #1e3a8a;
+  color: #bfdbfe;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+  .about-page {
+    padding: 18px;
+  }
+
+  .about-hero h1 {
+    font-size: 23px;
+  }
+
+  .about-card {
+    padding: 18px;
+  }
+
+  .about-info-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .about-info-row strong {
+    text-align: left;
+  }
+
+}

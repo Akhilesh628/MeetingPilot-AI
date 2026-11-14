@@ -4,7 +4,8 @@ import {
     Bot,
     CalendarDays,
     Settings,
-    Plus
+    Plus,
+    Info
 } from "lucide-react";
 
 export default function Sidebar({
@@ -52,6 +53,14 @@ export default function Sidebar({
                 >
                     <Settings size={18} />
                     Settings
+                </button>
+
+                <button
+                    className={`nav-item ${activePage === "about" ? "active" : ""}`}
+                    onClick={() => onNavigate("about")}
+                >
+                    <Info size={18} />
+                    About
                 </button>
 
             </div>

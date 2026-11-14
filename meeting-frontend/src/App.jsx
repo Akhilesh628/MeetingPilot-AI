@@ -21,14 +21,19 @@ import {
   AlertCircle,
   Mic,
   Menu,
-  X
+  X,
+  Bot,
+  Info
 } from "lucide-react";
 
 import "./App.css";
 
 export default function App() {
 
-  // Theme management
+  // ==========================================
+  // THEME MANAGEMENT
+  // ==========================================
+
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("meetingpilot-theme") || "light";
   });
@@ -44,7 +49,10 @@ export default function App() {
     );
   };
 
-  // Page navigation
+  // ==========================================
+  // PAGE NAVIGATION
+  // ==========================================
+
   const [activePage, setActivePage] = useState("chat");
 
   // Mobile sidebar
@@ -55,7 +63,10 @@ export default function App() {
     setMobileMenuOpen(false);
   };
 
-  // Chat messages
+  // ==========================================
+  // CHAT MESSAGES
+  // ==========================================
+
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -67,16 +78,26 @@ export default function App() {
   const [conversationId, setConversationId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Voice chat state
+  // ==========================================
+  // VOICE CHAT
+  // ==========================================
+
   const [voiceOpen, setVoiceOpen] = useState(false);
 
-  // Meetings page state
+  // ==========================================
+  // MEETINGS PAGE STATE
+  // ==========================================
+
   const [meetings, setMeetings] = useState("");
   const [meetingsLoading, setMeetingsLoading] = useState(false);
   const [meetingsError, setMeetingsError] = useState("");
-  const [meetingsConversationId, setMeetingsConversationId] = useState(null);
+  const [meetingsConversationId, setMeetingsConversationId] =
+      useState(null);
 
-  // Send chat message
+  // ==========================================
+  // SEND CHAT MESSAGE
+  // ==========================================
+
   const handleSend = async (message) => {
 
     if (!message.trim() || loading) return null;
@@ -92,6 +113,7 @@ export default function App() {
     setLoading(true);
 
     try {
+
       const result = await sendMessage(
           message,
           conversationId
@@ -110,6 +132,7 @@ export default function App() {
       return result.response;
 
     } catch (error) {
+
       console.error("MeetingPilot API Error:", error);
 
       const errorMessage =
@@ -131,13 +154,17 @@ export default function App() {
     }
   };
 
-  // Fetch upcoming meetings
+  // ==========================================
+  // FETCH UPCOMING MEETINGS
+  // ==========================================
+
   const fetchMeetings = async () => {
 
     setMeetingsLoading(true);
     setMeetingsError("");
 
     try {
+
       const result = await sendMessage(
           "Show ALL my upcoming Google Calendar meetings for the next 7 days. Retrieve every matching event. Include meeting title, event ID, start time, end time and Google Meet link. Do not create, update or delete any event.",
           meetingsConversationId
@@ -147,6 +174,7 @@ export default function App() {
       setMeetings(result.response || "");
 
     } catch (error) {
+
       console.error("Meetings API Error:", error);
 
       setMeetingsError(
@@ -166,7 +194,10 @@ export default function App() {
     }
   }, [activePage]);
 
-  // Start new conversation
+  // ==========================================
+  // START NEW CONVERSATION
+  // ==========================================
+
   const newChat = () => {
 
     if (loading) return;
@@ -185,11 +216,20 @@ export default function App() {
     ]);
   };
 
+  // ==========================================
+  // RENDER UI
+  // ==========================================
+
   return (
 
-      <div className={`app-layout ${mobileMenuOpen ? "mobile-menu-open" : ""}`}>
+      <div
+          className={`app-layout ${
+              mobileMenuOpen ? "mobile-menu-open" : ""
+          }`}
+      >
 
-        {/* Mobile sidebar backdrop */}
+        {/* MOBILE SIDEBAR BACKDROP */}
+
         {mobileMenuOpen && (
             <button
                 type="button"
@@ -199,28 +239,43 @@ export default function App() {
             />
         )}
 
-        {/* Sidebar */}
+        {/* SIDEBAR */}
+
         <Sidebar
             onNewChat={newChat}
             activePage={activePage}
             onNavigate={handleNavigate}
         />
 
-        {/* Main Panel */}
+        {/* MAIN PANEL */}
+
         <main className="main-panel">
 
-          {/* Header */}
+          {/* ==================================
+                    HEADER
+                ================================== */}
+
           <header className="topbar">
 
-            {/* Mobile hamburger button */}
+            {/* Mobile Hamburger */}
+
             <button
                 type="button"
                 className="mobile-menu-toggle"
-                onClick={() => setMobileMenuOpen(open => !open)}
-                aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                onClick={() =>
+                    setMobileMenuOpen(open => !open)
+                }
+                aria-label={
+                  mobileMenuOpen
+                      ? "Close navigation menu"
+                      : "Open navigation menu"
+                }
                 aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+              {mobileMenuOpen
+                  ? <X size={22} />
+                  : <Menu size={22} />
+              }
             </button>
 
             <div className="header-info">
@@ -230,7 +285,9 @@ export default function App() {
                     ? "AI Meeting Assistant"
                     : activePage === "meetings"
                         ? "My Meetings"
-                        : "Settings"}
+                        : activePage === "settings"
+                            ? "Settings"
+                            : "About MeetingPilot"}
               </h2>
 
               <p>
@@ -238,12 +295,16 @@ export default function App() {
                     ? "Manage your meetings using natural language"
                     : activePage === "meetings"
                         ? "View your upcoming Google Calendar events"
-                        : "Manage your MeetingPilot preferences"}
+                        : activePage === "settings"
+                            ? "Manage your MeetingPilot preferences"
+                            : "Learn more about MeetingPilot AI"}
               </p>
 
             </div>
 
             <div className="header-actions">
+
+              {/* Online Status */}
 
               <div className="top-status">
                 <span className="online-dot"></span>
@@ -251,6 +312,7 @@ export default function App() {
               </div>
 
               {/* Voice Chat */}
+
               {activePage === "chat" && (
                   <button
                       type="button"
@@ -264,6 +326,7 @@ export default function App() {
               )}
 
               {/* Theme Toggle */}
+
               <button
                   type="button"
                   className="theme-toggle"
@@ -275,15 +338,20 @@ export default function App() {
                 }
 
                 <span>
-                {theme === "dark" ? "Light Mode" : "Dark Mode"}
-              </span>
+                                {theme === "dark"
+                                    ? "Light Mode"
+                                    : "Dark Mode"}
+                            </span>
               </button>
 
             </div>
 
           </header>
 
-          {/* CHAT PAGE */}
+          {/* ==================================
+                    CHAT PAGE
+                ================================== */}
+
           {activePage === "chat" && (
               <>
 
@@ -355,7 +423,10 @@ export default function App() {
               </>
           )}
 
-          {/* MEETINGS PAGE */}
+          {/* ==================================
+                    MEETINGS PAGE
+                ================================== */}
+
           {activePage === "meetings" && (
 
               <section className="meetings-page">
@@ -363,6 +434,7 @@ export default function App() {
                 <div className="meetings-toolbar">
 
                   <div>
+
                     <h2>
                       <CalendarDays size={23} />
                       Upcoming Meetings
@@ -371,6 +443,7 @@ export default function App() {
                     <p>
                       Your Google Calendar events for the next 7 days
                     </p>
+
                   </div>
 
                   <button
@@ -380,7 +453,9 @@ export default function App() {
                   >
                     <RefreshCw
                         size={17}
-                        className={meetingsLoading ? "spin" : ""}
+                        className={
+                          meetingsLoading ? "spin" : ""
+                        }
                     />
                     Refresh
                   </button>
@@ -389,15 +464,24 @@ export default function App() {
 
                 {meetingsLoading && (
                     <div className="meetings-loading">
-                      <RefreshCw className="spin" size={30} />
+
+                      <RefreshCw
+                          className="spin"
+                          size={30}
+                      />
+
                       <p>Loading your meetings...</p>
+
                     </div>
                 )}
 
                 {meetingsError && (
                     <div className="meetings-error">
+
                       <AlertCircle size={20} />
+
                       {meetingsError}
+
                     </div>
                 )}
 
@@ -429,9 +513,15 @@ export default function App() {
                       ) : (
 
                           <div className="empty-meetings">
+
                             <CalendarDays size={45} />
+
                             <h3>No upcoming meetings</h3>
-                            <p>Your calendar is currently empty.</p>
+
+                            <p>
+                              Your calendar is currently empty.
+                            </p>
+
                           </div>
 
                       )}
@@ -444,20 +534,29 @@ export default function App() {
 
           )}
 
-          {/* SETTINGS PAGE */}
+          {/* ==================================
+                    SETTINGS PAGE
+                ================================== */}
+
           {activePage === "settings" && (
 
               <section className="settings-page">
 
                 <h2>Settings</h2>
 
-                <p>Manage your MeetingPilot preferences.</p>
+                <p>
+                  Manage your MeetingPilot preferences.
+                </p>
+
+                {/* Appearance */}
 
                 <div className="settings-card">
 
                   <h3>Appearance</h3>
 
-                  <p>Choose your preferred application theme.</p>
+                  <p>
+                    Choose your preferred application theme.
+                  </p>
 
                   <button
                       className="theme-toggle"
@@ -470,10 +569,14 @@ export default function App() {
 
                     {theme === "dark"
                         ? "Switch to Light Mode"
-                        : "Switch to Dark Mode"}
+                        : "Switch to Dark Mode"
+                    }
+
                   </button>
 
                 </div>
+
+                {/* Google Calendar */}
 
                 <div className="settings-card">
 
@@ -485,6 +588,8 @@ export default function App() {
                   </p>
 
                 </div>
+
+                {/* AI Assistant */}
 
                 <div className="settings-card">
 
@@ -500,14 +605,175 @@ export default function App() {
 
           )}
 
-          {/* Footer */}
+          {/* ==================================
+                    ABOUT PAGE
+                ================================== */}
+
+          {activePage === "about" && (
+
+              <section className="about-page">
+
+                {/* About Hero */}
+
+                <div className="about-hero">
+
+                  <div className="about-icon">
+                    <Bot size={35} />
+                  </div>
+
+                  <h1>About MeetingPilot AI</h1>
+
+                  <p>
+                    Your intelligent AI-powered meeting
+                    assistant to schedule, organize and
+                    manage meetings.
+                  </p>
+
+                </div>
+
+                {/* Application Information */}
+
+                <div className="about-card">
+
+                  <h3>
+                    <Info size={19} />
+                    Application Information
+                  </h3>
+
+                  <div className="about-info-row">
+                    <span>Application Name</span>
+                    <strong>MeetingPilot AI</strong>
+                  </div>
+
+                  <div className="about-info-row">
+                    <span>Version</span>
+                    <strong>1.0.0</strong>
+                  </div>
+
+                  <div className="about-info-row">
+                    <span>Application Type</span>
+                    <strong>Autonomous AI Assistant</strong>
+                  </div>
+
+                  <div className="about-info-row">
+                    <span>Platform</span>
+                    <strong>Web Application</strong>
+                  </div>
+
+                </div>
+
+                {/* Technology Stack */}
+
+                <div className="about-card">
+
+                  <h3>Technology Stack</h3>
+
+                  <div className="tech-list">
+
+                    {[
+                      "Java 21",
+                      "Spring Boot 4",
+                      "Spring AI 2.0.2",
+                      "React + Vite",
+                      "Groq AI",
+                      "Llama Model",
+                      "Model Context Protocol",
+                      "Google Calendar API",
+                      "PostgreSQL",
+                      "PGVector"
+                    ].map(technology => (
+
+                        <span
+                            className="tech-badge"
+                            key={technology}
+                        >
+                                        {technology}
+                                    </span>
+
+                    ))}
+
+                  </div>
+
+                </div>
+
+                {/* Key Features */}
+
+                <div className="about-card">
+
+                  <h3>Key Features</h3>
+
+                  <ul className="about-features">
+
+                    <li>
+                      AI-powered meeting scheduling
+                    </li>
+
+                    <li>
+                      Google Calendar integration
+                    </li>
+
+                    <li>
+                      Upcoming meeting management
+                    </li>
+
+                    <li>
+                      Meeting availability checking
+                    </li>
+
+                    <li>
+                      Google Meet link generation
+                    </li>
+
+                    <li>
+                      Voice-based AI conversations
+                    </li>
+
+                    <li>
+                      Autonomous AI agent using MCP
+                    </li>
+
+                  </ul>
+
+                </div>
+
+                {/* About Footer */}
+
+                <div className="about-footer">
+
+                  <div className="about-footer-icon">
+                    <Bot size={25} />
+                  </div>
+
+                  <h3>MeetingPilot AI</h3>
+
+                  <p>
+                    Smart Meetings. Intelligent Automation.
+                  </p>
+
+                  <span>
+                                Powered by Groq · Llama · Spring AI · MCP
+                            </span>
+
+                </div>
+
+              </section>
+
+          )}
+
+          {/* ==================================
+                    FOOTER
+                ================================== */}
+
           <footer className="footer">
             Powered by Groq · Llama · Spring AI · MCP
           </footer>
 
         </main>
 
-        {/* Voice Chat Modal */}
+        {/* ==================================
+                VOICE CHAT MODAL
+            ================================== */}
+
         {voiceOpen && (
             <VoiceChat
                 onSend={handleSend}
