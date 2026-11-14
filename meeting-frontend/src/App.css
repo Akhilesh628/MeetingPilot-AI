@@ -1860,3 +1860,93 @@ body {
   }
 }
 
+
+/* =========================================
+   FIX: MOBILE CHAT TEXT / TABLE OVERFLOW
+========================================= */
+
+@media (max-width: 768px) {
+
+  /* Chat content must use full available width */
+  .chat-window {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Message containers */
+  .message-row,
+  .message-row > div,
+  .message-text {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .message-text {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+  }
+
+  /* Markdown tables */
+  .chat-window table,
+  .message-text table {
+    display: block !important;
+    width: 100% !important;
+    min-width: 600px !important;
+    max-width: none !important;
+
+    table-layout: auto !important;
+    border-collapse: collapse;
+
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Table cells */
+  .chat-window th,
+  .chat-window td,
+  .message-text th,
+  .message-text td {
+    width: auto !important;
+    min-width: 120px !important;
+
+    padding: 10px 12px !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+
+    vertical-align: top;
+  }
+
+  /* Meeting links */
+  .chat-window table a,
+  .message-text table a {
+    display: inline-block !important;
+
+    max-width: 220px !important;
+
+    white-space: normal !important;
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* Long URLs outside tables */
+  .message-text a {
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  /* Code blocks */
+  .message-text pre {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  /* Prevent narrow message content */
+  .message-row .message-text {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+}
