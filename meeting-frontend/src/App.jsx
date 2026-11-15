@@ -19,20 +19,16 @@ import {
   RefreshCw,
   Video,
   AlertCircle,
-  Mic,
-  Menu,
-  X,
-  Bot,
-  Info
+  Mic
 } from "lucide-react";
 
 import "./App.css";
 
 export default function App() {
 
-  // ==========================================
+  // =====================================
   // THEME MANAGEMENT
-  // ==========================================
+  // =====================================
 
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("meetingpilot-theme") || "light";
@@ -49,23 +45,15 @@ export default function App() {
     );
   };
 
-  // ==========================================
+  // =====================================
   // PAGE NAVIGATION
-  // ==========================================
+  // =====================================
 
   const [activePage, setActivePage] = useState("chat");
 
-  // Mobile sidebar
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleNavigate = (page) => {
-    setActivePage(page);
-    setMobileMenuOpen(false);
-  };
-
-  // ==========================================
+  // =====================================
   // CHAT MESSAGES
-  // ==========================================
+  // =====================================
 
   const [messages, setMessages] = useState([
     {
@@ -78,30 +66,48 @@ export default function App() {
   const [conversationId, setConversationId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // ==========================================
-  // VOICE CHAT
-  // ==========================================
+  // =====================================
+  // VOICE CHAT STATE
+  // =====================================
 
   const [voiceOpen, setVoiceOpen] = useState(false);
 
-  // ==========================================
+  // =====================================
   // MEETINGS PAGE STATE
-  // ==========================================
+  // =====================================
 
   const [meetings, setMeetings] = useState("");
   const [meetingsLoading, setMeetingsLoading] = useState(false);
   const [meetingsError, setMeetingsError] = useState("");
-  const [meetingsConversationId, setMeetingsConversationId] =
-      useState(null);
+  const [meetingsConversationId, setMeetingsConversationId] = useState(null);
 
-  // ==========================================
-  // SEND CHAT MESSAGE
-  // ==========================================
+  // =====================================
+  // DETECT UPCOMING MEETING REQUEST
+  // =====================================
+
+  const isUpcomingMeetingRequest = (message) => {
+
+    const normalizedMessage = message.toLowerCase();
+
+    return (
+        normalizedMessage.includes("upcoming meetings") ||
+        normalizedMessage.includes("upcoming meeting") ||
+        normalizedMessage.includes("show my meetings") ||
+        normalizedMessage.includes("show all meetings") ||
+        normalizedMessage.includes("next 7 days meetings") ||
+        normalizedMessage.includes("calendar meetings")
+    );
+  };
+
+  // =====================================
+  // CHAT API
+  // =====================================
 
   const handleSend = async (message) => {
 
     if (!message.trim() || loading) return null;
 
+    // Add user message
     setMessages(previous => [
       ...previous,
       {
@@ -114,22 +120,107 @@ export default function App() {
 
     try {
 
+      let apiMessage = message;
+
+      // =====================================
+      // UPCOMING MEETINGS PROMPT
+      // =====================================
+
+      if (isUpcomingMeetingRequest(message)) {
+
+        apiMessage = `
+                    Retrieve ALL upcoming meetings from my
+                    Google Calendar for the next 7 days.
+
+                    IMPORTANT:
+                    Return every matching meeting.
+
+                    REQUIRED RESPONSE FORMAT:
+
+                    Success: true or false
+
+                    Display a Markdown table with exactly
+                    these columns:
+
+                    | Meeting Title | Event ID | Start Date and Time | End Date and Time | Google Meet Link |
+
+                    COLUMN REQUIREMENTS:
+
+                    1. Meeting Title:
+                       Return the actual Google Calendar event title.
+
+                    2. Event ID:
+                       Return the actual Google Calendar event ID.
+
+                    3. Start Date and Time:
+                       Return the actual event start date and time.
+
+                    4. End Date and Time:
+                       Return the actual event end date and time.
+
+                    5. Google Meet Link:
+                       Return the actual clickable Google Meet URL.
+
+                    IMPORTANT RULES:
+
+                    - Return ALL upcoming meetings.
+                    - Each meeting must have a separate table row.
+                    - Never combine multiple meetings into one row.
+                    - Include all five columns.
+                    - Use actual Google Calendar event information.
+                    - Convert date and time to Asia/Kolkata timezone.
+                    - Display date and time clearly.
+                    - Include clickable Google Meet URLs.
+                    - Never assume meeting duration.
+                    - Never invent missing end times.
+                    - Never invent missing event IDs.
+                    - If a field is unavailable, show Not available.
+                    - If no meetings exist, clearly explain that.
+                    - Do not create any meeting.
+                    - Do not update any meeting.
+                    - Do not delete any meeting.
+
+                    AFTER THE TABLE:
+
+                    Display:
+
+                    Response Message:
+                    A clear summary of the meeting retrieval operation.
+
+                    Return the complete response in Markdown format.
+                `;
+      }
+
+      // =====================================
+      // CALL MEETINGPILOT BACKEND
+      // =====================================
+
       const result = await sendMessage(
-          message,
+          apiMessage,
           conversationId
       );
 
-      setConversationId(result.conversationId);
+      // Save conversation ID
+      if (result.conversationId) {
+        setConversationId(result.conversationId);
+      }
 
+      // Get AI response
+      const assistantResponse =
+          result.response ||
+          result.message ||
+          "The assistant returned an empty response.";
+
+      // Add assistant response to chat
       setMessages(previous => [
         ...previous,
         {
           role: "assistant",
-          content: result.response
+          content: assistantResponse
         }
       ]);
 
-      return result.response;
+      return assistantResponse;
 
     } catch (error) {
 
@@ -150,13 +241,16 @@ export default function App() {
       return null;
 
     } finally {
+
       setLoading(false);
+
     }
   };
 
-  // ==========================================
-  // FETCH UPCOMING MEETINGS
-  // ==========================================
+  // =====================================
+  // FETCH ALL UPCOMING MEETINGS
+  // FOR SEPARATE MEETINGS PAGE
+  // =====================================
 
   const fetchMeetings = async () => {
 
@@ -166,12 +260,39 @@ export default function App() {
     try {
 
       const result = await sendMessage(
-          "Show ALL my upcoming Google Calendar meetings for the next 7 days. Retrieve every matching event. Include meeting title, event ID, start time, end time and Google Meet link. Do not create, update or delete any event.",
+          `
+                Show ALL my upcoming Google Calendar meetings
+                for the next 7 days.
+
+                Include:
+
+                | Meeting Title | Event ID | Start Date and Time | End Date and Time | Google Meet Link |
+
+                Requirements:
+
+                - Return every matching meeting.
+                - Include actual event IDs.
+                - Include actual start date and time.
+                - Include actual end date and time.
+                - Include actual Google Meet links.
+                - Convert date and time to Asia/Kolkata.
+                - Use Markdown table format.
+                - Never assume meeting duration.
+                - Never invent missing information.
+                - Do not create, update or delete meetings.
+                `,
           meetingsConversationId
       );
 
-      setMeetingsConversationId(result.conversationId);
-      setMeetings(result.response || "");
+      if (result.conversationId) {
+        setMeetingsConversationId(result.conversationId);
+      }
+
+      setMeetings(
+          result.response ||
+          result.message ||
+          ""
+      );
 
     } catch (error) {
 
@@ -183,20 +304,27 @@ export default function App() {
       );
 
     } finally {
+
       setMeetingsLoading(false);
+
     }
   };
 
-  // Load meetings when Meetings page opens
+  // =====================================
+  // LOAD MEETINGS WHEN PAGE OPENS
+  // =====================================
+
   useEffect(() => {
+
     if (activePage === "meetings") {
       fetchMeetings();
     }
+
   }, [activePage]);
 
-  // ==========================================
+  // =====================================
   // START NEW CONVERSATION
-  // ==========================================
+  // =====================================
 
   const newChat = () => {
 
@@ -204,7 +332,6 @@ export default function App() {
 
     setConversationId(null);
     setActivePage("chat");
-    setMobileMenuOpen(false);
     setVoiceOpen(false);
 
     setMessages([
@@ -216,67 +343,29 @@ export default function App() {
     ]);
   };
 
-  // ==========================================
-  // RENDER UI
-  // ==========================================
+  // =====================================
+  // MAIN UI
+  // =====================================
 
   return (
 
-      <div
-          className={`app-layout ${
-              mobileMenuOpen ? "mobile-menu-open" : ""
-          }`}
-      >
-
-        {/* MOBILE SIDEBAR BACKDROP */}
-
-        {mobileMenuOpen && (
-            <button
-                type="button"
-                className="sidebar-backdrop"
-                aria-label="Close navigation menu"
-                onClick={() => setMobileMenuOpen(false)}
-            />
-        )}
+      <div className="app-layout">
 
         {/* SIDEBAR */}
 
         <Sidebar
             onNewChat={newChat}
             activePage={activePage}
-            onNavigate={handleNavigate}
+            onNavigate={setActivePage}
         />
 
         {/* MAIN PANEL */}
 
         <main className="main-panel">
 
-          {/* ==================================
-                    HEADER
-                ================================== */}
+          {/* HEADER */}
 
           <header className="topbar">
-
-            {/* Mobile Hamburger */}
-
-            <button
-                type="button"
-                className="mobile-menu-toggle"
-                onClick={() =>
-                    setMobileMenuOpen(open => !open)
-                }
-                aria-label={
-                  mobileMenuOpen
-                      ? "Close navigation menu"
-                      : "Open navigation menu"
-                }
-                aria-expanded={mobileMenuOpen}
-            >
-              {mobileMenuOpen
-                  ? <X size={22} />
-                  : <Menu size={22} />
-              }
-            </button>
 
             <div className="header-info">
 
@@ -285,9 +374,7 @@ export default function App() {
                     ? "AI Meeting Assistant"
                     : activePage === "meetings"
                         ? "My Meetings"
-                        : activePage === "settings"
-                            ? "Settings"
-                            : "About MeetingPilot"}
+                        : "Settings"}
               </h2>
 
               <p>
@@ -295,25 +382,22 @@ export default function App() {
                     ? "Manage your meetings using natural language"
                     : activePage === "meetings"
                         ? "View your upcoming Google Calendar events"
-                        : activePage === "settings"
-                            ? "Manage your MeetingPilot preferences"
-                            : "Learn more about MeetingPilot AI"}
+                        : "Manage your MeetingPilot preferences"}
               </p>
 
             </div>
 
             <div className="header-actions">
 
-              {/* Online Status */}
-
               <div className="top-status">
                 <span className="online-dot"></span>
                 AI Assistant Online
               </div>
 
-              {/* Voice Chat */}
+              {/* VOICE CHAT BUTTON */}
 
               {activePage === "chat" && (
+
                   <button
                       type="button"
                       className="voice-mode-button"
@@ -323,15 +407,17 @@ export default function App() {
                     <Mic size={18} />
                     Voice Chat
                   </button>
+
               )}
 
-              {/* Theme Toggle */}
+              {/* THEME TOGGLE */}
 
               <button
                   type="button"
                   className="theme-toggle"
                   onClick={toggleTheme}
               >
+
                 {theme === "dark"
                     ? <Sun size={19} />
                     : <Moon size={19} />
@@ -342,18 +428,22 @@ export default function App() {
                                     ? "Light Mode"
                                     : "Dark Mode"}
                             </span>
+
               </button>
 
             </div>
 
           </header>
 
-          {/* ==================================
+          {/* =====================================
                     CHAT PAGE
-                ================================== */}
+                ===================================== */}
 
           {activePage === "chat" && (
+
               <>
+
+                {/* WELCOME SECTION */}
 
                 <section className="welcome">
 
@@ -369,6 +459,8 @@ export default function App() {
                     Schedule, organize and manage meetings
                     with the power of autonomous AI.
                   </p>
+
+                  {/* SUGGESTIONS */}
 
                   <div className="suggestions">
 
@@ -410,10 +502,14 @@ export default function App() {
 
                 </section>
 
+                {/* CHAT WINDOW */}
+
                 <ChatWindow
                     messages={messages}
                     loading={loading}
                 />
+
+                {/* CHAT INPUT */}
 
                 <ChatInput
                     onSend={handleSend}
@@ -421,30 +517,33 @@ export default function App() {
                 />
 
               </>
+
           )}
 
-          {/* ==================================
+          {/* =====================================
                     MEETINGS PAGE
-                ================================== */}
-
-
-          {/* ==================================
-    MEETINGS PAGE
-================================== */}
+                ===================================== */}
 
           {activePage === "meetings" && (
+
               <section className="meetings-page">
 
+                {/* MEETINGS HEADER */}
+
                 <div className="meetings-toolbar">
+
                   <div>
+
                     <h2>
                       <CalendarDays size={23} />
                       Upcoming Meetings
                     </h2>
 
                     <p>
-                      Your Google Calendar events for the next 7 days
+                      Your Google Calendar events
+                      for the next 7 days
                     </p>
+
                   </div>
 
                   <button
@@ -452,36 +551,67 @@ export default function App() {
                       onClick={fetchMeetings}
                       disabled={meetingsLoading}
                   >
+
                     <RefreshCw
                         size={17}
-                        className={meetingsLoading ? "spin" : ""}
+                        className={
+                          meetingsLoading ? "spin" : ""
+                        }
                     />
+
                     Refresh
+
                   </button>
+
                 </div>
 
+                {/* LOADING */}
+
                 {meetingsLoading && (
+
                     <div className="meetings-loading">
-                      <RefreshCw className="spin" size={30} />
-                      <p>Loading your meetings...</p>
+
+                      <RefreshCw
+                          className="spin"
+                          size={30}
+                      />
+
+                      <p>
+                        Loading your meetings...
+                      </p>
+
                     </div>
+
                 )}
+
+                {/* ERROR */}
 
                 {meetingsError && (
+
                     <div className="meetings-error">
+
                       <AlertCircle size={20} />
+
                       {meetingsError}
+
                     </div>
+
                 )}
 
+                {/* MEETING RESULTS */}
+
                 {!meetingsLoading && !meetingsError && (
+
                     <div className="meetings-result">
 
                       {meetings ? (
+
                           <ReactMarkdown
                               remarkPlugins={[remarkGfm]}
                               components={{
+
                                 a: ({ href, children }) => (
+
                                     <a
                                         href={href}
                                         target="_blank"
@@ -491,29 +621,55 @@ export default function App() {
                                       <Video size={15} />
                                       {children}
                                     </a>
+
+                                ),
+
+                                table: ({ children }) => (
+
+                                    <div className="meeting-table-wrapper">
+
+                                      <table className="meeting-details-table">
+                                        {children}
+                                      </table>
+
+                                    </div>
+
                                 )
+
                               }}
                           >
                             {meetings}
                           </ReactMarkdown>
+
                       ) : (
+
                           <div className="empty-meetings">
+
                             <CalendarDays size={45} />
-                            <h3>No upcoming meetings</h3>
-                            <p>Your calendar is currently empty.</p>
+
+                            <h3>
+                              No upcoming meetings
+                            </h3>
+
+                            <p>
+                              Your calendar is currently empty.
+                            </p>
+
                           </div>
+
                       )}
 
                     </div>
+
                 )}
 
               </section>
+
           )}
 
-
-          {/* ==================================
+          {/* =====================================
                     SETTINGS PAGE
-                ================================== */}
+                ===================================== */}
 
           {activePage === "settings" && (
 
@@ -524,8 +680,6 @@ export default function App() {
                 <p>
                   Manage your MeetingPilot preferences.
                 </p>
-
-                {/* Appearance */}
 
                 <div className="settings-card">
 
@@ -539,6 +693,7 @@ export default function App() {
                       className="theme-toggle"
                       onClick={toggleTheme}
                   >
+
                     {theme === "dark"
                         ? <Sun size={18} />
                         : <Moon size={18} />
@@ -546,14 +701,11 @@ export default function App() {
 
                     {theme === "dark"
                         ? "Switch to Light Mode"
-                        : "Switch to Dark Mode"
-                    }
+                        : "Switch to Dark Mode"}
 
                   </button>
 
                 </div>
-
-                {/* Google Calendar */}
 
                 <div className="settings-card">
 
@@ -565,8 +717,6 @@ export default function App() {
                   </p>
 
                 </div>
-
-                {/* AI Assistant */}
 
                 <div className="settings-card">
 
@@ -582,164 +732,7 @@ export default function App() {
 
           )}
 
-          {/* ==================================
-                    ABOUT PAGE
-                ================================== */}
-
-          {activePage === "about" && (
-
-              <section className="about-page">
-
-                {/* About Hero */}
-
-                <div className="about-hero">
-
-                  <div className="about-icon">
-                    <Bot size={35} />
-                  </div>
-
-                  <h1>About MeetingPilot AI</h1>
-
-                  <p>
-                    Your intelligent AI-powered meeting
-                    assistant to schedule, organize and
-                    manage meetings.
-                  </p>
-
-                </div>
-
-                {/* Application Information */}
-
-                <div className="about-card">
-
-                  <h3>
-                    <Info size={19} />
-                    Application Information
-                  </h3>
-
-                  <div className="about-info-row">
-                    <span>Application Name</span>
-                    <strong>MeetingPilot AI</strong>
-                  </div>
-
-                  <div className="about-info-row">
-                    <span>Version</span>
-                    <strong>1.0.0</strong>
-                  </div>
-
-                  <div className="about-info-row">
-                    <span>Application Type</span>
-                    <strong>Autonomous AI Assistant</strong>
-                  </div>
-
-                  <div className="about-info-row">
-                    <span>Platform</span>
-                    <strong>Web Application</strong>
-                  </div>
-
-                </div>
-
-                {/* Technology Stack */}
-
-                <div className="about-card">
-
-                  <h3>Technology Stack</h3>
-
-                  <div className="tech-list">
-
-                    {[
-                      "Java 21",
-                      "Spring Boot 4",
-                      "Spring AI 2.0.2",
-                      "React + Vite",
-                      "Groq AI",
-                      "Llama Model",
-                      "Model Context Protocol",
-                      "Google Calendar API",
-                      "PostgreSQL",
-                      "PGVector"
-                    ].map(technology => (
-
-                        <span
-                            className="tech-badge"
-                            key={technology}
-                        >
-                                        {technology}
-                                    </span>
-
-                    ))}
-
-                  </div>
-
-                </div>
-
-                {/* Key Features */}
-
-                <div className="about-card">
-
-                  <h3>Key Features</h3>
-
-                  <ul className="about-features">
-
-                    <li>
-                      AI-powered meeting scheduling
-                    </li>
-
-                    <li>
-                      Google Calendar integration
-                    </li>
-
-                    <li>
-                      Upcoming meeting management
-                    </li>
-
-                    <li>
-                      Meeting availability checking
-                    </li>
-
-                    <li>
-                      Google Meet link generation
-                    </li>
-
-                    <li>
-                      Voice-based AI conversations
-                    </li>
-
-                    <li>
-                      Autonomous AI agent using MCP
-                    </li>
-
-                  </ul>
-
-                </div>
-
-                {/* About Footer */}
-
-                <div className="about-footer">
-
-                  <div className="about-footer-icon">
-                    <Bot size={25} />
-                  </div>
-
-                  <h3>MeetingPilot AI</h3>
-
-                  <p>
-                    Smart Meetings. Intelligent Automation.
-                  </p>
-
-                  <span>
-                                Powered by Groq · Llama · Spring AI · MCP
-                            </span>
-
-                </div>
-
-              </section>
-
-          )}
-
-          {/* ==================================
-                    FOOTER
-                ================================== */}
+          {/* FOOTER */}
 
           <footer className="footer">
             Powered by Groq · Llama · Spring AI · MCP
@@ -747,17 +740,19 @@ export default function App() {
 
         </main>
 
-        {/* ==================================
-                VOICE CHAT MODAL
-            ================================== */}
+        {/* VOICE CHAT MODAL */}
 
         {voiceOpen && (
+
             <VoiceChat
                 onSend={handleSend}
                 onClose={() => setVoiceOpen(false)}
             />
+
         )}
 
       </div>
+
   );
+
 }
