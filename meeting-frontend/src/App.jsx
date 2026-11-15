@@ -5,10 +5,8 @@ import Sidebar from "./components/sidebar";
 import ChatWindow from "./components/chatWindow";
 import ChatInput from "./components/chatInput";
 import VoiceChat from "./components/VoiceChat";
-
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-
 import { sendMessage } from "./services/meetingApi";
 
 import {
@@ -261,25 +259,25 @@ export default function App() {
 
       const result = await sendMessage(
           `
-                Show ALL my upcoming Google Calendar meetings
-                for the next 7 days.
+                    Show ALL my upcoming Google Calendar meetings
+                    for the next 7 days.
 
-                Include:
+                    Include:
 
-                | Meeting Title | Event ID | Start Date and Time | End Date and Time | Google Meet Link |
+                    | Meeting Title | Event ID | Start Date and Time | End Date and Time | Google Meet Link |
 
-                Requirements:
+                    Requirements:
 
-                - Return every matching meeting.
-                - Include actual event IDs.
-                - Include actual start date and time.
-                - Include actual end date and time.
-                - Include actual Google Meet links.
-                - Convert date and time to Asia/Kolkata.
-                - Use Markdown table format.
-                - Never assume meeting duration.
-                - Never invent missing information.
-                - Do not create, update or delete meetings.
+                    - Return every matching meeting.
+                    - Include actual event IDs.
+                    - Include actual start date and time.
+                    - Include actual end date and time.
+                    - Include actual Google Meet links.
+                    - Convert date and time to Asia/Kolkata.
+                    - Use Markdown table format.
+                    - Never assume meeting duration.
+                    - Never invent missing information.
+                    - Do not create, update or delete meetings.
                 `,
           meetingsConversationId
       );
@@ -369,23 +367,23 @@ export default function App() {
 
             <div className="header-info">
 
-              <h2>
-                {activePage === "chat"
-                    ? "AI Meeting Assistant"
-                    : activePage === "meetings"
-                        ? "My Meetings"
-                        : "Settings"}
-              </h2>
+                  <h2>
+                    {activePage === "chat"
+                        ? "AI Meeting Assistant"
+                        : activePage === "meetings"
+                            ? "My Meetings"
+                            : "Settings"}
+                  </h2>
 
-              <p>
-                {activePage === "chat"
-                    ? "Manage your meetings using natural language"
-                    : activePage === "meetings"
-                        ? "View your upcoming Google Calendar events"
-                        : "Manage your MeetingPilot preferences"}
-              </p>
+                  <p>
+                    {activePage === "chat"
+                        ? "Manage your meetings using natural language"
+                        : activePage === "meetings"
+                            ? "View your upcoming Google Calendar events"
+                            : "Manage your MeetingPilot preferences"}
+                  </p>
 
-            </div>
+                </div>
 
             <div className="header-actions">
 
@@ -436,8 +434,8 @@ export default function App() {
           </header>
 
           {/* =====================================
-                    CHAT PAGE
-                ===================================== */}
+                          CHAT PAGE
+                    ===================================== */}
 
           {activePage === "chat" && (
 
@@ -521,8 +519,8 @@ export default function App() {
           )}
 
           {/* =====================================
-                    MEETINGS PAGE
-                ===================================== */}
+                          MEETINGS PAGE
+                    ===================================== */}
 
           {activePage === "meetings" && (
 
@@ -668,8 +666,8 @@ export default function App() {
           )}
 
           {/* =====================================
-                    SETTINGS PAGE
-                ===================================== */}
+                          SETTINGS PAGE
+                    ===================================== */}
 
           {activePage === "settings" && (
 
