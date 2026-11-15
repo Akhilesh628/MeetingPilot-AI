@@ -8,7 +8,7 @@ import VoiceChat from "./components/VoiceChat";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { sendMessage } from "./services/meetingApi";
-
+import About from "./components/about/about";
 import {
   CalendarDays,
   Sparkles,
@@ -367,21 +367,25 @@ export default function App() {
 
             <div className="header-info">
 
-                  <h2>
-                    {activePage === "chat"
-                        ? "AI Meeting Assistant"
-                        : activePage === "meetings"
-                            ? "My Meetings"
+              <h2>
+                {activePage === "chat"
+                    ? "AI Meeting Assistant"
+                    : activePage === "meetings"
+                        ? "My Meetings"
+                        : activePage === "about"
+                            ? "About MeetingPilot AI"
                             : "Settings"}
-                  </h2>
+              </h2>
 
-                  <p>
-                    {activePage === "chat"
-                        ? "Manage your meetings using natural language"
-                        : activePage === "meetings"
-                            ? "View your upcoming Google Calendar events"
+              <p>
+                {activePage === "chat"
+                    ? "Manage your meetings using natural language"
+                    : activePage === "meetings"
+                        ? "View your upcoming Google Calendar events"
+                        : activePage === "about"
+                            ? "Learn more about MeetingPilot AI"
                             : "Manage your MeetingPilot preferences"}
-                  </p>
+              </p>
 
                 </div>
 
@@ -729,7 +733,16 @@ export default function App() {
               </section>
 
           )}
+          {activePage === "settings" && (
+              <section className="settings-page">
+                {/* Your existing Settings content */}
+              </section>
+          )}
+          {/* =====================================
+          ABOUT PAGE
+===================================== */}
 
+          {activePage === "about" && <About />}
           {/* FOOTER */}
 
           <footer className="footer">
