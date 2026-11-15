@@ -427,16 +427,14 @@ export default function App() {
                     MEETINGS PAGE
                 ================================== */}
 
-
-          {/* ==================================
-    MEETINGS PAGE
-================================== */}
-
           {activePage === "meetings" && (
+
               <section className="meetings-page">
 
                 <div className="meetings-toolbar">
+
                   <div>
+
                     <h2>
                       <CalendarDays size={23} />
                       Upcoming Meetings
@@ -445,6 +443,7 @@ export default function App() {
                     <p>
                       Your Google Calendar events for the next 7 days
                     </p>
+
                   </div>
 
                   <button
@@ -454,30 +453,44 @@ export default function App() {
                   >
                     <RefreshCw
                         size={17}
-                        className={meetingsLoading ? "spin" : ""}
+                        className={
+                          meetingsLoading ? "spin" : ""
+                        }
                     />
                     Refresh
                   </button>
+
                 </div>
 
                 {meetingsLoading && (
                     <div className="meetings-loading">
-                      <RefreshCw className="spin" size={30} />
+
+                      <RefreshCw
+                          className="spin"
+                          size={30}
+                      />
+
                       <p>Loading your meetings...</p>
+
                     </div>
                 )}
 
                 {meetingsError && (
                     <div className="meetings-error">
+
                       <AlertCircle size={20} />
+
                       {meetingsError}
+
                     </div>
                 )}
 
                 {!meetingsLoading && !meetingsError && (
+
                     <div className="meetings-result">
 
                       {meetings ? (
+
                           <ReactMarkdown
                               remarkPlugins={[remarkGfm]}
                               components={{
@@ -496,20 +509,30 @@ export default function App() {
                           >
                             {meetings}
                           </ReactMarkdown>
+
                       ) : (
+
                           <div className="empty-meetings">
+
                             <CalendarDays size={45} />
+
                             <h3>No upcoming meetings</h3>
-                            <p>Your calendar is currently empty.</p>
+
+                            <p>
+                              Your calendar is currently empty.
+                            </p>
+
                           </div>
+
                       )}
 
                     </div>
+
                 )}
 
               </section>
-          )}
 
+          )}
 
           {/* ==================================
                     SETTINGS PAGE
