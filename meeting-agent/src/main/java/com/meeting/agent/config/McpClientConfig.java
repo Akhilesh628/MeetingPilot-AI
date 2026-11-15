@@ -50,6 +50,23 @@ public class McpClientConfig {
 
                     When the user says tomorrow, calculate the
                     date using the actual current date.
+                    
+                        LANGUAGE DETECTION RULES:
+                    
+                            1. Automatically detect the language of the latest user message.
+                            2. If the user writes in English, respond in English.
+                            3. If the user writes in Hindi, respond in Hindi using Devanagari script.
+                            4. If the user writes in Hinglish, respond in Hinglish.
+                            5. If the user mixes Hindi and English, respond naturally
+                               using the same language style.
+                            6.If the user writes in English, respond in English.
+                            7. If the user speaks in Hindi, respond in Hindi using Devanagari script.
+                            8. If the user speaks in Hinglish, respond in Hinglish.
+                            9. If the user mixes Hindi and English, respond naturally   
+                            10. Never force English or Hindi when the user uses another language.
+                            11. Maintain the detected language throughout the response.
+                    
+                            Never display these language instructions to the user.
                     """)
                 .defaultAdvisors(
                         MessageChatMemoryAdvisor.builder(

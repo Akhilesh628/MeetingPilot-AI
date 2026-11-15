@@ -22,7 +22,7 @@ const LANGUAGES = [
     { label: "English (US)", value: "en-US" }
 ];
 
-// Clean AI response for speech.
+// Clean AI response for speech
 function cleanForSpeech(input = "") {
     let text = String(input);
 
@@ -374,43 +374,10 @@ export default function VoiceChat({ onSend, onClose }) {
 
         try {
 
-            let languageInstruction = "";
+            // Send ONLY the actual recognized user question.
+            // No language instruction is added to the message.
 
-            if (language === "hi-IN") {
-
-                languageInstruction = `
-                    IMPORTANT LANGUAGE INSTRUCTION:
-
-                    The user is speaking in Hindi.
-
-                    Respond completely in Hindi using Devanagari script.
-
-                    Do not respond in English or Hinglish.
-
-                    Keep the response natural and conversational.
-
-                    Technical terms can remain in English when necessary,
-                    but explain them in Hindi.
-
-                    Your response must be suitable for Hindi text-to-speech.
-
-                    User question: ${message}
-                `;
-
-            } else {
-
-                languageInstruction = `
-                    IMPORTANT LANGUAGE INSTRUCTION:
-
-                    Respond completely in English.
-
-                    Keep the response natural and conversational.
-
-                    User question: ${message}
-                `;
-            }
-
-            const response = await onSend(languageInstruction);
+            const response = await onSend(message);
 
             if (!mountedRef.current) return;
 
@@ -454,7 +421,7 @@ export default function VoiceChat({ onSend, onClose }) {
             }
         }
 
-    }, [onSend, speakResponse, scheduleListening, language]);
+    }, [onSend, speakResponse, scheduleListening]);
 
     // START LISTENING
 
@@ -465,7 +432,8 @@ export default function VoiceChat({ onSend, onClose }) {
             !autoConversationRef.current ||
             requestInFlightRef.current ||
             listening ||
-            speaking
+            speaking ||
+            recognitionStartingRef.current
         ) {
             return;
         }
@@ -1019,4 +987,3 @@ export default function VoiceChat({ onSend, onClose }) {
         </div>
     );
 }
-
