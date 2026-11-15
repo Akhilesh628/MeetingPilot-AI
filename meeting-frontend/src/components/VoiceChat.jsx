@@ -1,5 +1,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
+
 import {
     Mic,
     MicOff,
@@ -22,33 +23,28 @@ const LANGUAGES = [
 ];
 
 // Clean AI response for speech.
-// Original response remains unchanged in the voice box.
 function cleanForSpeech(input = "") {
     let text = String(input);
 
-    // Remove code blocks.
     text = text.replace(/```[\s\S]*?```/g, " ");
 
-    // Keep Markdown link labels, remove URLs.
     text = text.replace(
         /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
         "$1"
     );
 
-    // Remove raw URLs and email addresses.
     text = text.replace(/https?:\/\/[^\s)]+/gi, " ");
+
     text = text.replace(
         /\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b/gi,
         " "
     );
 
-    // Remove Markdown table separator rows.
     text = text.replace(
         /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/gm,
         ""
     );
 
-    // Convert table rows into readable speech.
     text = text.replace(/^\s*\|(.+)\|\s*$/gm, (_, row) => {
         const cells = row
             .split("|")
@@ -58,7 +54,6 @@ function cleanForSpeech(input = "") {
         return cells.join(". ");
     });
 
-    // Remove Markdown formatting.
     text = text.replace(/^#{1,6}\s*/gm, "");
     text = text.replace(/^\s*[-*+]\s+/gm, "");
     text = text.replace(/^\s*\d+[.)]\s+/gm, "");
@@ -69,14 +64,11 @@ function cleanForSpeech(input = "") {
     text = text.replace(/~~(.*?)~~/g, "$1");
     text = text.replace(/`([^`]+)`/g, "$1");
 
-    // Remove technical IDs.
     text = text.replace(/\b[A-Za-z0-9_-]{20,}\b/g, " ");
 
-    // Remove special formatting characters.
     text = text.replace(/[{}[\]<>@#$%^&*=\\|]/g, " ");
     text = text.replace(/[•▪►]/g, " ");
 
-    // Normalize whitespace.
     text = text.replace(/\r/g, "\n");
     text = text.replace(/[ \t]+/g, " ");
     text = text.replace(/\n{2,}/g, ". ");
@@ -105,6 +97,7 @@ function getRecognitionAPI() {
 }
 
 export default function VoiceChat({ onSend, onClose }) {
+
     const [language, setLanguage] = useState("hi-IN");
 
     const [listening, setListening] = useState(false);
@@ -131,11 +124,10 @@ export default function VoiceChat({ onSend, onClose }) {
     const restartTimerRef = useRef(null);
     const silenceTimerRef = useRef(null);
 
-    // ------------------------------------------
     // CLEANUP
-    // ------------------------------------------
 
     useEffect(() => {
+
         mountedRef.current = true;
 
         if ("speechSynthesis" in window) {
@@ -143,6 +135,7 @@ export default function VoiceChat({ onSend, onClose }) {
         }
 
         return () => {
+
             mountedRef.current = false;
             autoConversationRef.current = false;
 
@@ -157,13 +150,13 @@ export default function VoiceChat({ onSend, onClose }) {
                 window.speechSynthesis.cancel();
             }
         };
+
     }, []);
 
-    // ------------------------------------------
     // STOP SPEECH
-    // ------------------------------------------
 
     const stopSpeech = useCallback(() => {
+
         speechRunRef.current++;
         speechQueueRef.current = [];
 
@@ -174,13 +167,13 @@ export default function VoiceChat({ onSend, onClose }) {
         if (mountedRef.current) {
             setSpeaking(false);
         }
+
     }, []);
 
-    // ------------------------------------------
     // STOP LISTENING
-    // ------------------------------------------
 
     const stopListening = useCallback(() => {
+
         clearTimeout(silenceTimerRef.current);
 
         recognitionStartingRef.current = false;
@@ -190,13 +183,13 @@ export default function VoiceChat({ onSend, onClose }) {
         if (mountedRef.current) {
             setListening(false);
         }
+
     }, []);
 
-    // ------------------------------------------
     // GET AVAILABLE VOICE
-    // ------------------------------------------
 
     const getVoice = useCallback(() => {
+
         if (!("speechSynthesis" in window)) return null;
 
         const voices = window.speechSynthesis.getVoices();
@@ -214,18 +207,21 @@ export default function VoiceChat({ onSend, onClose }) {
             ) ||
             null
         );
+
     }, [language]);
 
-    // ------------------------------------------
     // AUTOMATIC LISTENING RESTART
-    // ------------------------------------------
+
+    const startListeningRef = useRef(null);
 
     const scheduleListening = useCallback((delay = 700) => {
+
         clearTimeout(restartTimerRef.current);
 
         if (!autoConversationRef.current) return;
 
         restartTimerRef.current = window.setTimeout(() => {
+
             if (
                 mountedRef.current &&
                 autoConversationRef.current &&
@@ -233,16 +229,15 @@ export default function VoiceChat({ onSend, onClose }) {
             ) {
                 startListeningRef.current?.();
             }
+
         }, delay);
+
     }, []);
 
-    const startListeningRef = useRef(null);
-
-    // ------------------------------------------
     // SPEECH QUEUE
-    // ------------------------------------------
 
     const speakNext = useCallback((runId) => {
+
         if (
             !mountedRef.current ||
             runId !== speechRunRef.current
@@ -252,30 +247,42 @@ export default function VoiceChat({ onSend, onClose }) {
 
         const sentence = speechQueueRef.current.shift();
 
-        // AI finished speaking.
         if (!sentence) {
+
             setSpeaking(false);
 
-            // Automatically listen for the next question.
             scheduleListening(800);
 
             return;
         }
 
+        // HINDI / ENGLISH VOICE SELECTION
+
         const utterance = new SpeechSynthesisUtterance(sentence);
 
         utterance.lang = language;
-        utterance.rate = 0.92;
+        utterance.rate = language === "hi-IN" ? 0.88 : 0.95;
         utterance.pitch = 1;
         utterance.volume = 1;
 
-        const voice = getVoice();
+        const voices = window.speechSynthesis.getVoices();
 
-        if (voice) {
-            utterance.voice = voice;
+        const selectedVoice =
+            voices.find(voice =>
+                voice.lang.toLowerCase() === language.toLowerCase()
+            ) ||
+            voices.find(voice =>
+                voice.lang.toLowerCase().startsWith(
+                    language.split("-")[0].toLowerCase()
+                )
+            );
+
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
         }
 
         utterance.onstart = () => {
+
             if (
                 mountedRef.current &&
                 runId === speechRunRef.current
@@ -289,6 +296,7 @@ export default function VoiceChat({ onSend, onClose }) {
         };
 
         utterance.onerror = event => {
+
             if (
                 event.error !== "canceled" &&
                 event.error !== "interrupted"
@@ -300,18 +308,17 @@ export default function VoiceChat({ onSend, onClose }) {
         };
 
         window.speechSynthesis.speak(utterance);
-    }, [language, getVoice, scheduleListening]);
 
-    // ------------------------------------------
+    }, [language, scheduleListening]);
+
     // SPEAK AI RESPONSE
-    // ------------------------------------------
 
     const speakResponse = useCallback((response) => {
+
         stopSpeech();
 
         if (!("speechSynthesis" in window)) {
-            setError("Speech output is not supported in this browser.");
-            scheduleListening();
+            setError("Speech output is not supported.");
             return;
         }
 
@@ -329,26 +336,30 @@ export default function VoiceChat({ onSend, onClose }) {
         setSpeaking(true);
 
         window.setTimeout(() => {
+
             if (
                 mountedRef.current &&
                 runId === speechRunRef.current
             ) {
                 speakNext(runId);
             }
+
         }, 150);
+
     }, [stopSpeech, speakNext, scheduleListening]);
 
-    // ------------------------------------------
     // AUTOMATIC BACKEND REQUEST
-    // ------------------------------------------
 
     const submitRecognizedMessage = useCallback(async () => {
+
         const message = transcriptRef.current.trim();
 
         if (!message || requestInFlightRef.current) {
+
             if (autoConversationRef.current && !message) {
                 scheduleListening(500);
             }
+
             return;
         }
 
@@ -362,8 +373,44 @@ export default function VoiceChat({ onSend, onClose }) {
         setAssistantText("");
 
         try {
-            // Automatically call the existing MeetingPilot backend.
-            const response = await onSend(message);
+
+            let languageInstruction = "";
+
+            if (language === "hi-IN") {
+
+                languageInstruction = `
+                    IMPORTANT LANGUAGE INSTRUCTION:
+
+                    The user is speaking in Hindi.
+
+                    Respond completely in Hindi using Devanagari script.
+
+                    Do not respond in English or Hinglish.
+
+                    Keep the response natural and conversational.
+
+                    Technical terms can remain in English when necessary,
+                    but explain them in Hindi.
+
+                    Your response must be suitable for Hindi text-to-speech.
+
+                    User question: ${message}
+                `;
+
+            } else {
+
+                languageInstruction = `
+                    IMPORTANT LANGUAGE INSTRUCTION:
+
+                    Respond completely in English.
+
+                    Keep the response natural and conversational.
+
+                    User question: ${message}
+                `;
+            }
+
+            const response = await onSend(languageInstruction);
 
             if (!mountedRef.current) return;
 
@@ -371,39 +418,48 @@ export default function VoiceChat({ onSend, onClose }) {
                 typeof response === "string" &&
                 response.trim()
             ) {
+
                 setAssistantText(response);
+
                 speakResponse(response);
+
             } else {
+
                 setError(
-                    "The backend did not return a response string. Check your handleSend function."
+                    "The backend did not return a response string."
                 );
 
                 scheduleListening(1200);
             }
+
         } catch (err) {
-            console.error("Automatic voice request failed:", err);
+
+            console.error("Voice request failed:", err);
 
             if (mountedRef.current) {
+
                 setError(
-                    "Unable to fetch meeting information. Please try again."
+                    "Unable to fetch the AI response. Please try again."
                 );
 
                 scheduleListening(1500);
             }
+
         } finally {
+
             requestInFlightRef.current = false;
 
             if (mountedRef.current) {
                 setLoading(false);
             }
         }
-    }, [onSend, speakResponse, scheduleListening]);
 
-    // ------------------------------------------
+    }, [onSend, speakResponse, scheduleListening, language]);
+
     // START LISTENING
-    // ------------------------------------------
 
     const startListening = useCallback(() => {
+
         if (
             !mountedRef.current ||
             !autoConversationRef.current ||
@@ -417,11 +473,14 @@ export default function VoiceChat({ onSend, onClose }) {
         const Recognition = getRecognitionAPI();
 
         if (!Recognition) {
+
             setError(
                 "Speech recognition is unavailable. Please use Chrome or Edge."
             );
+
             setConversationActive(false);
             autoConversationRef.current = false;
+
             return;
         }
 
@@ -432,7 +491,6 @@ export default function VoiceChat({ onSend, onClose }) {
 
         recognition.lang = language;
 
-        // One utterance at a time.
         recognition.continuous = false;
         recognition.interimResults = true;
         recognition.maxAlternatives = 1;
@@ -447,6 +505,7 @@ export default function VoiceChat({ onSend, onClose }) {
         recognitionRef.current = recognition;
 
         recognition.onstart = () => {
+
             recognitionStartingRef.current = false;
 
             if (mountedRef.current) {
@@ -455,6 +514,7 @@ export default function VoiceChat({ onSend, onClose }) {
         };
 
         recognition.onresult = event => {
+
             let interim = "";
 
             for (
@@ -462,6 +522,7 @@ export default function VoiceChat({ onSend, onClose }) {
                 i < event.results.length;
                 i++
             ) {
+
                 const result = event.results[i];
                 const transcript = result[0].transcript;
 
@@ -473,42 +534,51 @@ export default function VoiceChat({ onSend, onClose }) {
             }
 
             if (mountedRef.current) {
+
                 setRecognizedText(transcriptRef.current.trim());
                 setInterimText(interim);
             }
 
-            // Detect a short pause in speech.
-            // This helps avoid waiting unnecessarily for recognition to end.
             clearTimeout(silenceTimerRef.current);
 
             silenceTimerRef.current = window.setTimeout(() => {
+
                 if (
                     recognitionRef.current === recognition &&
                     autoConversationRef.current
                 ) {
                     recognition.stop();
                 }
+
             }, 1100);
         };
 
         recognition.onerror = event => {
+
             recognitionStartingRef.current = false;
 
             if (!mountedRef.current) return;
 
             if (event.error === "not-allowed") {
+
                 autoConversationRef.current = false;
                 setConversationActive(false);
-                setError("Please allow microphone permission in your browser.");
+
+                setError(
+                    "Please allow microphone permission in your browser."
+                );
+
             } else if (
                 event.error !== "no-speech" &&
                 event.error !== "aborted"
             ) {
+
                 setError(`Microphone error: ${event.error}`);
             }
         };
 
         recognition.onend = () => {
+
             recognitionStartingRef.current = false;
 
             clearTimeout(silenceTimerRef.current);
@@ -523,8 +593,11 @@ export default function VoiceChat({ onSend, onClose }) {
         };
 
         try {
+
             recognition.start();
+
         } catch (err) {
+
             recognitionStartingRef.current = false;
 
             console.error("Recognition start error:", err);
@@ -534,6 +607,7 @@ export default function VoiceChat({ onSend, onClose }) {
 
             scheduleListening(1200);
         }
+
     }, [
         language,
         listening,
@@ -542,16 +616,18 @@ export default function VoiceChat({ onSend, onClose }) {
         scheduleListening
     ]);
 
-    // Keep latest function available to automatic restart callback.
+    // KEEP LATEST LISTENING FUNCTION
+
     useEffect(() => {
+
         startListeningRef.current = startListening;
+
     }, [startListening]);
 
-    // ------------------------------------------
     // START CONVERSATION
-    // ------------------------------------------
 
     const startConversation = () => {
+
         setError("");
 
         autoConversationRef.current = true;
@@ -562,11 +638,10 @@ export default function VoiceChat({ onSend, onClose }) {
         startListening();
     };
 
-    // ------------------------------------------
     // PAUSE CONVERSATION
-    // ------------------------------------------
 
     const pauseConversation = () => {
+
         autoConversationRef.current = false;
         setConversationActive(false);
 
@@ -577,24 +652,21 @@ export default function VoiceChat({ onSend, onClose }) {
         stopSpeech();
     };
 
-    // ------------------------------------------
     // INTERRUPT AI
-    // ------------------------------------------
 
     const interruptSpeech = () => {
+
         stopSpeech();
 
-        // Continue listening after interruption.
         if (autoConversationRef.current) {
             scheduleListening(500);
         }
     };
 
-    // ------------------------------------------
     // LANGUAGE CHANGE
-    // ------------------------------------------
 
     const changeLanguage = event => {
+
         const newLanguage = event.target.value;
 
         const wasActive = autoConversationRef.current;
@@ -612,25 +684,22 @@ export default function VoiceChat({ onSend, onClose }) {
         }
     };
 
-    // ------------------------------------------
     // REPLAY RESPONSE
-    // ------------------------------------------
 
     const replayResponse = () => {
+
         if (!assistantText) return;
 
-        // Do not restart microphone during replay.
         autoConversationRef.current = false;
         setConversationActive(false);
 
         speakResponse(assistantText);
     };
 
-    // ------------------------------------------
     // CLOSE
-    // ------------------------------------------
 
     const closeVoiceChat = () => {
+
         autoConversationRef.current = false;
         setConversationActive(false);
 
@@ -643,12 +712,12 @@ export default function VoiceChat({ onSend, onClose }) {
         onClose?.();
     };
 
-    // ------------------------------------------
     // UI
-    // ------------------------------------------
 
     return (
+
         <div className="voice-overlay">
+
             <section
                 className="voice-modal"
                 role="dialog"
@@ -657,9 +726,11 @@ export default function VoiceChat({ onSend, onClose }) {
             >
 
                 {/* Header */}
+
                 <header className="voice-header">
 
                     <div className="voice-brand">
+
                         <div className="voice-brand-icon">
                             <Mic size={26} />
                         </div>
@@ -668,6 +739,7 @@ export default function VoiceChat({ onSend, onClose }) {
                             <h2>MeetingPilot AI</h2>
                             <p>Automatic Voice Assistant</p>
                         </div>
+
                     </div>
 
                     <button
@@ -683,6 +755,7 @@ export default function VoiceChat({ onSend, onClose }) {
                 <main className="voice-body">
 
                     {/* Voice animation */}
+
                     <div
                         className={`voice-animation ${
                             speaking
@@ -692,7 +765,9 @@ export default function VoiceChat({ onSend, onClose }) {
                                     : ""
                         }`}
                     >
+
                         <div className="voice-animation-inner">
+
                             {speaking ? (
                                 <Volume2 size={52} />
                             ) : listening ? (
@@ -700,10 +775,13 @@ export default function VoiceChat({ onSend, onClose }) {
                             ) : (
                                 <MicOff size={52} />
                             )}
+
                         </div>
+
                     </div>
 
                     {/* Status */}
+
                     <h1>
                         {speaking
                             ? "MeetingPilot is speaking..."
@@ -729,24 +807,30 @@ export default function VoiceChat({ onSend, onClose }) {
                     </p>
 
                     {/* Sound wave */}
+
                     <div
                         className={`voice-wave ${
                             speaking || listening ? "active" : ""
                         }`}
                     >
+
                         {Array.from({ length: 19 }).map((_, index) => (
                             <span key={index} />
                         ))}
+
                     </div>
 
                     {/* Conversation box */}
+
                     <section className="voice-conversation">
 
                         <div className="voice-conversation-header">
+
                             <strong>Live conversation</strong>
 
                             <span className="voice-status">
-                <span className="voice-status-dot" />
+
+                                <span className="voice-status-dot" />
 
                                 {listening
                                     ? "Listening"
@@ -757,25 +841,37 @@ export default function VoiceChat({ onSend, onClose }) {
                                             : conversationActive
                                                 ? "Ready"
                                                 : "Paused"}
-              </span>
+
+                            </span>
+
                         </div>
 
                         {recognizedText && (
+
                             <div className="voice-message voice-user-message">
+
                                 <strong>You</strong>
+
                                 <p>{recognizedText}</p>
+
                             </div>
                         )}
 
                         {interimText && (
+
                             <div className="voice-message voice-interim-message">
+
                                 <strong>Recognizing</strong>
+
                                 <p>{interimText}</p>
+
                             </div>
                         )}
 
                         {loading && (
+
                             <div className="voice-message voice-ai-message">
+
                                 <strong>MeetingPilot AI</strong>
 
                                 <p>
@@ -783,13 +879,17 @@ export default function VoiceChat({ onSend, onClose }) {
                                         className="voice-spinner"
                                         size={18}
                                     />
+
                                     Fetching your meeting information...
                                 </p>
+
                             </div>
                         )}
 
                         {assistantText && (
+
                             <div className="voice-message voice-ai-message">
+
                                 <strong>MeetingPilot AI</strong>
 
                                 <p>{assistantText}</p>
@@ -798,9 +898,13 @@ export default function VoiceChat({ onSend, onClose }) {
                                     className="voice-replay-button"
                                     onClick={replayResponse}
                                 >
+
                                     <RotateCcw size={15} />
+
                                     Replay response
+
                                 </button>
+
                             </div>
                         )}
 
@@ -808,15 +912,19 @@ export default function VoiceChat({ onSend, onClose }) {
                             !interimText &&
                             !assistantText &&
                             !loading && (
+
                                 <p className="voice-empty-message">
                                     Your conversation will appear here.
                                 </p>
+
                             )}
 
                     </section>
 
                     {/* Language */}
+
                     <div className="voice-language-control">
+
                         <Languages size={22} />
 
                         <select
@@ -824,54 +932,78 @@ export default function VoiceChat({ onSend, onClose }) {
                             onChange={changeLanguage}
                             aria-label="Select voice language"
                         >
+
                             {LANGUAGES.map(item => (
+
                                 <option
                                     key={item.value}
                                     value={item.value}
                                 >
                                     {item.label}
                                 </option>
+
                             ))}
+
                         </select>
+
                     </div>
 
                     {/* Error */}
+
                     {error && (
+
                         <div className="voice-error">
                             {error}
                         </div>
+
                     )}
 
                     {/* Controls */}
+
                     <div className="voice-controls">
 
                         {!conversationActive ? (
+
                             <button
                                 className="voice-primary-button"
                                 onClick={startConversation}
                                 disabled={loading}
                             >
+
                                 <Play size={20} />
+
                                 Start conversation
+
                             </button>
+
                         ) : (
+
                             <button
                                 className="voice-stop-button"
                                 onClick={pauseConversation}
                             >
+
                                 <Pause size={20} />
+
                                 Pause conversation
+
                             </button>
+
                         )}
 
                         {speaking && (
+
                             <button
                                 className="voice-interrupt-button"
                                 onClick={interruptSpeech}
                             >
+
                                 <Square size={16} />
+
                                 Interrupt
+
                             </button>
+
                         )}
 
                     </div>
@@ -883,6 +1015,8 @@ export default function VoiceChat({ onSend, onClose }) {
                 </footer>
 
             </section>
+
         </div>
     );
 }
+
