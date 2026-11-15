@@ -1888,61 +1888,29 @@ body {
     word-break: normal !important;
   }
 
-  /* Markdown tables */
-  .chat-window table,
-  .message-text table {
-    display: block !important;
-    width: 100% !important;
-    min-width: 600px !important;
-    max-width: none !important;
+/* Target links inside assistant chat messages */
+.message-row.assistant .message-text a[href*="meet.google.com"],
+.message-text a[href*="meet.google.com"],
+.chat-window a[href*="meet.google.com"] {
+  color: #2563eb !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+  text-decoration-color: #2563eb !important;
+  text-underline-offset: 3px !important;
+  cursor: pointer !important;
+  display: inline-block !important;
+  padding: 2px 4px !important;
+  border-radius: 4px !important;
+}
 
-    table-layout: auto !important;
-    border-collapse: collapse;
-
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Table cells */
-  .chat-window th,
-  .chat-window td,
-  .message-text th,
-  .message-text td {
-    width: auto !important;
-    min-width: 120px !important;
-
-    padding: 10px 12px !important;
-
-    white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
-
-    vertical-align: top;
-  }
-
-  /* Meeting links */
-  .chat-window table a,
-  .message-text table a {
-    display: inline-block !important;
-
-    max-width: 220px !important;
-
-    white-space: normal !important;
-    word-break: break-all !important;
-    overflow-wrap: anywhere !important;
-  }
-
-  /* Long URLs outside tables */
-  .message-text a {
-    overflow-wrap: anywhere !important;
-    word-break: break-word !important;
-  }
-
-  /* Code blocks */
-  .message-text pre {
-    max-width: 100% !important;
-    overflow-x: auto !important;
-  }
+/* Hover */
+.message-row.assistant .message-text a[href*="meet.google.com"]:hover,
+.message-text a[href*="meet.google.com"]:hover,
+.chat-window a[href*="meet.google.com"]:hover {
+  color: #1d4ed8 !important;
+  background: #eff6ff !important;
+  text-decoration-thickness: 2px !important;
+}
 
   /* Prevent narrow message content */
   .message-row .message-text {
