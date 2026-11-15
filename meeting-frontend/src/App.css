@@ -1427,3 +1427,53 @@ body,
   }
 }
 
+/* Fix full page scrolling */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+.app-layout {
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.main-panel {
+  height: 100vh;
+  min-height: 0;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+/* About page spacing */
+.about-page {
+  width: 100%;
+  min-height: auto;
+  height: auto;
+  padding: 28px;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+/* Keep header visible while scrolling */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+/* Footer spacing */
+.footer {
+  flex-shrink: 0;
+  padding: 18px;
+}
+

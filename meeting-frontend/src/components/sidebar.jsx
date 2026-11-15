@@ -31,6 +31,7 @@ export default function Sidebar({
 
             <div className="sidebar-links">
 
+                {/* AI Assistant */}
                 <button
                     className={`nav-item ${activePage === "chat" ? "active" : ""}`}
                     onClick={() => onNavigate("chat")}
@@ -39,6 +40,7 @@ export default function Sidebar({
                     AI Assistant
                 </button>
 
+                {/* Meetings */}
                 <button
                     className={`nav-item ${activePage === "meetings" ? "active" : ""}`}
                     onClick={() => onNavigate("meetings")}
@@ -47,6 +49,7 @@ export default function Sidebar({
                     Meetings
                 </button>
 
+                {/* Settings */}
                 <button
                     className={`nav-item ${activePage === "settings" ? "active" : ""}`}
                     onClick={() => onNavigate("settings")}
@@ -55,6 +58,7 @@ export default function Sidebar({
                     Settings
                 </button>
 
+                {/* About */}
                 <button
                     className={`nav-item ${activePage === "about" ? "active" : ""}`}
                     onClick={() => onNavigate("about")}
