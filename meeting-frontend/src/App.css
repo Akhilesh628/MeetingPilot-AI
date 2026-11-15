@@ -1962,4 +1962,141 @@ body,
 
 }
 
+/* ==========================================
+   FIX MOBILE BOTTOM NAVIGATION
+========================================== */
+
+@media screen and (max-width: 768px) {
+
+  .sidebar {
+    display: flex !important;
+    position: fixed !important;
+
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 72px !important;
+    min-height: 72px !important;
+
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-around !important;
+
+    padding: 5px 6px !important;
+    margin: 0 !important;
+
+    background: var(--sidebar-bg) !important;
+    border-top: 1px solid var(--border-color) !important;
+    border-right: none !important;
+
+    z-index: 9999 !important;
+    overflow: visible !important;
+  }
+
+  .sidebar .brand,
+  .sidebar .new-chat {
+    display: none !important;
+  }
+
+  .sidebar .mobile-new-chat {
+    display: flex !important;
+    flex: 0 0 42px !important;
+
+    width: 42px !important;
+    height: 44px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: var(--accent) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 11px !important;
+  }
+
+  .sidebar-links {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    position: static !important;
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+    height: 100% !important;
+
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-around !important;
+
+    gap: 2px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .sidebar-links .nav-item {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    position: static !important;
+
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    height: 58px !important;
+
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 4px !important;
+    padding: 4px 1px !important;
+
+    background: transparent !important;
+    border: none !important;
+    border-radius: 9px !important;
+
+    color: var(--text-secondary) !important;
+    font-size: 10px !important;
+  }
+
+  .sidebar-links .nav-item span {
+    display: block !important;
+    visibility: visible !important;
+    font-size: 10px !important;
+    color: inherit !important;
+  }
+
+  .sidebar-links .nav-item svg {
+    display: block !important;
+    width: 20px !important;
+    height: 20px !important;
+    color: inherit !important;
+  }
+
+  .sidebar-links .nav-item.active {
+    background: var(--hover-bg) !important;
+    color: var(--accent) !important;
+  }
+
+  /* Keep chat input above navigation */
+
+  .chat-input {
+    margin-bottom: 82px !important;
+  }
+
+  .settings-page,
+  .meetings-page {
+    padding-bottom: 90px !important;
+  }
+
+  .about-page {
+    padding-bottom: 90px !important;
+  }
+}
+
 
